@@ -16,3 +16,5 @@ npm run build
 ```
 
 完整的技术栈、迁移记录、后端端口和维护说明请参阅 [MIGRATION.md](./MIGRATION.md)。
+
+目录分层、页面合并/拆分和命名规则见 [DIRECTORY_REFACTOR.md](./DIRECTORY_REFACTOR.md)。

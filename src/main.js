@@ -6,7 +6,7 @@ import axios from 'axios'
 import { api } from './services/api'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Delete, Edit, Search } from '@element-plus/icons-vue'
-import './assets/css/gobal.css'
+import './assets/styles/global.css'
 
 const app = createApp(App)
 app.component('DeleteIcon', Delete)
