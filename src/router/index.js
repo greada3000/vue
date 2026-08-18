@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
@@ -9,9 +8,6 @@ import articleDetail from '../views/articledetial.vue'
 import circleDetail from '../views/circle.vue'
 import myhome from '../views/myhome.vue'
 import otherhome from '../views/otherhome.vue'
-
-
-Vue.use(VueRouter)
 
 
 const routes = [
@@ -129,7 +125,7 @@ const routes = [
     component: Manage,
     children:[
       {
-        path:'/',
+        path:'',
         name:'ManageHome',
         component: ()=>import('../views/manage/ManageHome.vue')
       }
@@ -170,9 +166,8 @@ const routes = [
   }
 ]
 
-const router = new VueRouter({
-  mode: 'hash',
-  base: process.env.BASE_URL,
+const router = createRouter({
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes
 })
 

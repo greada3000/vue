@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import bus from '../../bus/bus'
 export default{
 data(){
   return{

@@ -9,8 +9,10 @@
 
           <el-col class="center-search" :span="12">
             <div class="grid-content bg-purple">
-              <el-input v-model="keyword" placeholder="请输入内容"  class="input-with-select">
-                <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+              <el-input v-model="keyword" placeholder="请输入内容" class="input-with-select">
+                <template #append>
+                  <el-button @click="search">搜索</el-button>
+                </template>
               </el-input>
 
             </div>
@@ -18,7 +20,7 @@
          
             <el-col class="right-entry" :span="2">
                 <div class="grid-content bg-purple">
-                    <span><router-link target="_blank" :to="'/myhome/'+$store.getters.getUser.name">{{$store.getters.getUser.username}}</router-link></span>
+                    <span v-if="$store.getters.getLoginStatus"><router-link target="_blank" :to="'/myhome/'+$store.getters.getUser.name">{{$store.getters.getUser.username}}</router-link></span>
                 </div>
                         
             </el-col>
@@ -36,32 +38,30 @@
             <div class="card-container">
             <el-card style="width: 80%;">
 
-              <el-row>
-                <el-col :span="12" class="word"><router-link target="_blank" :to="'/circle/'+words[0].circleId ">{{ words[0].circleName }}</router-link></el-col>
-                <el-col :span="12" class="word"><router-link target="_blank" :to="'/circle/'+words[1].circleId ">{{ words[1].circleName }}</router-link></el-col>
-                <el-col :span="12" class="word"><router-link target="_blank" :to="'/circle/'+words[2].circleId ">{{ words[2].circleName }}</router-link></el-col>
+              <el-row v-if="words.length">
+                <el-col v-for="word in words.slice(0, 6)" :key="word.circleId" :span="8" class="word">
+                  <router-link target="_blank" :to="'/circle/' + word.circleId">{{ word.circleName }}</router-link>
+                </el-col>
               </el-row>
-              <el-row>
-                <el-col :span="12" class="word"><router-link target="_blank" :to="'/circle/'+words[3].circleId ">{{ words[3].circleName }}</router-link></el-col>
-                <el-col :span="12" class="word"><router-link target="_blank" :to="'/circle/'+words[4].circleId ">{{ words[4].circleName }}</router-link></el-col>
-                <el-col :span="12" class="word"><router-link target="_blank" :to="'/circle/'+words[5].circleId ">{{ words[5].circleName }}</router-link></el-col>
-              </el-row>
+              <el-empty v-else description="暂无圈子数据" />
 
           </el-card>
           </div>
           <div class="card-container" v-for="(item,i) in ArticleList" :key="i">
             <el-card style="width: 80%;">
-              <div slot="header" class="clearfix">
+              <template #header>
+                <div class="clearfix">
                   <span style="line-height: 36px"><router-link target="_blank" :to="'/articledetail/'+item.article.id "><h4>{{ item.article.title }}</h4></router-link></span>
                   <h5>作者：<router-link target="_blank" :to="'/userhome/'+item.user.userId ">{{item.user.username}}</router-link>
                   | 圈子： <router-link target="_blank" :to="'/circle/'+item.circle.circleId ">{{item.circle.circleName}}</router-link></h5>
-              </div>
+                </div>
+              </template>
               <div class="article-content">
                   {{ item.article.content }}
               </div>
-              <div slot="footer" class="clearfix">
-                  <el-button type="text" class="pull-right">Read More</el-button>
-              </div>
+              <template #footer>
+                <div class="clearfix"><el-button link type="primary" class="pull-right">Read More</el-button></div>
+              </template>
             </el-card>
           </div>
 

@@ -61,7 +61,6 @@
     </div>
 </template>
 <script>
-import bus from '../bus/bus'
     export default {
         data() {
             return {
@@ -93,7 +92,6 @@ import bus from '../bus/bus'
                 // console.log('点了')
                 let url='/search/article'
                 // console.log(bus)
-                bus.$emit('search')
                 this.$router.replace({
                     query:{keyword:this.keyword}
                 });

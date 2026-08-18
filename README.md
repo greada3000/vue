@@ -1,19 +1,18 @@
 # vuestudy
 
-## Project setup
-```
+基于 Vue 3、Vite、Vue Router、Vuex 和 Element Plus 的前端项目。
+
+## 快速开始
+
+```bash
 npm install
+npm run dev
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+生产构建：
 
-### Compiles and minifies for production
-```
+```bash
 npm run build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+完整的技术栈、迁移记录、后端端口和维护说明请参阅 [MIGRATION.md](./MIGRATION.md)。
