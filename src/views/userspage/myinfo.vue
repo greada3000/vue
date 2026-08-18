@@ -3,9 +3,9 @@
         <!-- <span>{{$route.params.id}}</span> -->
         <div class="user-info">
         <el-card class="user-card">
-        <div slot="header" class="user-card-header">
+        <template #header><div class="user-card-header">
             <span class="user-card-title">信息修改</span>
-        </div>
+        </div></template>
         <el-form class="user-form" :model="user">
             <el-form-item label="昵称">
             <el-input v-model="user.username"></el-input>
@@ -38,7 +38,7 @@
     },
     methods:{
       getUser(){
-        this.axios.post('http://localhost:8101/userController/getUserById/'+this.$route.params.id)
+        this.axios.post(this.$api.user('/userController/getUserById/'+this.$route.params.id))
         .then((resp)=>{
           let data=resp.data;
           if(data.code==200){
@@ -48,7 +48,7 @@
         })
       },
       search(){
-        this.axios.post('http://localhost:8101/userController/addOrUpdateUser',this.editForm)
+        this.axios.post(this.$api.user('/userController/addOrUpdateUser'),this.editForm)
         .then((resp)=>{
           let data=resp.data;
           if(data.code==200){

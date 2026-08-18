@@ -1,7 +1,7 @@
 <template>
     <div class="about">
       <!-- 面包屑导航 -->
-      <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb separator=">">
         <el-breadcrumb-item :to="{ path: '/manage' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>管理列表</el-breadcrumb-item>
         <el-breadcrumb-item>用户管理</el-breadcrumb-item>
@@ -11,7 +11,7 @@
           <el-row :gutter="20">
             <el-col :span="7">
               <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getUserList">
-                <el-button slot="append" icon="el-icon-search" @click="getUserList"></el-button>
+                <template #append><el-button @click="getUserList">搜索</el-button></template>
               </el-input></el-col>
             <el-col :span="4">
               <el-button type="primary" @click="dialogVisible=true">添加用户</el-button>
@@ -26,21 +26,21 @@
             <el-table-column label="用户名称" prop="username"></el-table-column>
             <el-table-column label="用户账号" prop="userId"></el-table-column>
             <el-table-column label="用户类型" prop="userId">
-              <template slot-scope="scope">
+              <template #default="scope">
                 <h4 v-if=scope.row.usertype>管理员</h4>
                 <h4 v-else>普通用户</h4>
               </template>
             </el-table-column>
             <el-table-column label="操作" >
-              <template slot-scope="scope">
+              <template #default="scope">
                 <el-tooltip class="item" effect="dark" content="修改用户" placement="top" :enterable="false">
-                  <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.userId)"></el-button>
+                  <el-button type="primary" @click="showEditDialog(scope.row.userId)"><el-icon><EditIcon /></el-icon></el-button>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="用户主页" placement="top" :enterable="false">
-                  <el-button type="warning" icon="el-icon-search" @click="touserhome(scope.row.userId)"></el-button>
+                  <el-button type="warning" @click="touserhome(scope.row.userId)"><el-icon><SearchIcon /></el-icon></el-button>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="删除用户" placement="top" :enterable="false">
-                  <el-button type="danger" icon="el-icon-delete" @click="removeUserById(scope.row.userId)"></el-button>
+                  <el-button type="danger" @click="removeUserById(scope.row.userId)"><el-icon><DeleteIcon /></el-icon></el-button>
                 </el-tooltip>
               </template>
             </el-table-column>
@@ -62,7 +62,7 @@
       <!-- 添加用户 -->
       <el-dialog
         title="添加用户"
-        :visible.sync="dialogVisible"
+        v-model="dialogVisible"
         append-to-body
         width="30%"
         @close="handleClose">
@@ -90,16 +90,16 @@
             
             </el-form>
   
-        <span slot="footer" class="dialog-footer">
+        <template #footer><span class="dialog-footer">
           <el-button type="primary" @click="submitForm(ruleForm)">注册</el-button>
           <el-button @click="resetForm('ruleForm')">重置</el-button>
           <el-button @click="dialogVisible = false">取 消</el-button>
-        </span>
+        </span></template>
       </el-dialog>
       <!-- 修改用户 -->
       <el-dialog
         title="修改用户信息"
-        :visible.sync="editDialogVisible"
+        v-model="editDialogVisible"
         append-to-body
         width="40%">
 
@@ -120,10 +120,10 @@
           
         </el-form>
 
-        <span slot="footer" class="dialog-footer">
+        <template #footer><span class="dialog-footer">
           <el-button @click="editDialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="edit">确 定</el-button>
-        </span>
+        </span></template>
       </el-dialog>
     </div>
   </template>
@@ -205,7 +205,7 @@ export default{
   },
   methods:{
     submitForm(ruleForm) {
-        this.axios.post('http://localhost:8101/userController/register',this.ruleForm)
+        this.axios.post(this.$api.user('/userController/register'),this.ruleForm)
         .then((resp)=>{
           let data=resp.data;
           if(data.code==200){
@@ -226,7 +226,7 @@ export default{
 
       },
     getUserList(){
-      this.axios.post('http://localhost:8101/userController/selectAll',
+      this.axios.post(this.$api.user('/userController/selectAll'),
         this.queryInfo
       )
         .then((resp)=>{
@@ -259,7 +259,7 @@ export default{
       this.$refs.ruleForm.resetFields();
     },
     showEditDialog(id){
-      this.axios.get('http://localhost:8101/userController/getUserById/'+id)
+      this.axios.get(this.$api.user('/userController/getUserById/'+id))
       .then((resp)=>{
           let data=resp.data;
           console.log(data);
@@ -280,7 +280,7 @@ export default{
       window.open(routeData.href, '_blank'); 
     },
     edit(){
-      this.axios.post('http://localhost:8101/userController/addOrUpdateUser',this.editForm)
+      this.axios.post(this.$api.user('/userController/addOrUpdateUser'),this.editForm)
         .then((resp)=>{
           let data=resp.data;
           if(data.code==200){
@@ -310,7 +310,7 @@ export default{
       if(result!=='confirm'){
         return this.$message.info('取消删除')
       }
-      this.axios.get('http://localhost:8101/userController/delStudentById/'+id)
+      this.axios.get(this.$api.user('/userController/delStudentById/'+id))
       .then((resp)=>{
           let data=resp.data;
           console.log(data);

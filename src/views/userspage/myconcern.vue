@@ -7,7 +7,7 @@
             <el-card>
                 <div v-for="(item,i) in concernlist" :key="i">
                     <el-card>
-                        <div slot="header" class="clearfix">
+                        <template #header><div class="clearfix">
                             <el-row :gutter="6">
                                 <el-col :span="7">
                                 <h3><router-link target="_blank" :to="'/userhome/'+item.userId ">{{item.username}}</router-link></h3>
@@ -21,7 +21,7 @@
                             </el-row>
 
                            
-                        </div> 
+                        </div></template>
 
                     </el-card>
                 </div>
@@ -44,7 +44,7 @@
         },
         methods:{
         getconcern(){
-            this.axios.post('http://localhost:8110/userConController/getlastuser/'+this.$route.params.id)
+            this.axios.post(this.$api.relation('/userConController/getlastuser/'+this.$route.params.id))
             .then((resp)=>{
                 let data=resp.data;
                 if(data.code==200){
@@ -58,7 +58,7 @@
                 preuser:this.$store.getters.getUser.name,
                 lastuser:id,
             }
-            this.axios.post('http://localhost:8110/userConController/deleteCon',prelast)
+            this.axios.post(this.$api.relation('/userConController/deleteCon'),prelast)
                 .then((resp)=>{
                 let data=resp.data;
                 if(data.code==200){

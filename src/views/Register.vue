@@ -93,7 +93,7 @@
     },
     methods: {
       submitForm(ruleForm) {
-        this.axios.post('http://localhost:8101/userController/register',this.ruleForm)
+        this.axios.post(this.$api.user('/userController/register'),this.ruleForm)
         .then((resp)=>{
           let data=resp.data;
           if(data.code==200){

@@ -139,7 +139,7 @@ export default {
           this.$router.push({path:'/Manage'});
         },
         getMainCircle(){
-          this.axios.post('http://localhost:8301/circleController/selectAll',this.circle)
+          this.axios.post(this.$api.circle('/circleController/selectAll'),this.circle)
           .then((resp)=>{
                 let data=resp.data;
                 if(data.code==200){
@@ -158,7 +158,7 @@ export default {
             this.getArticleList();
         },
         getArticleList(){
-          this.axios.post('http://localhost:8201/articleController/searchByContent',
+          this.axios.post(this.$api.article('/articleController/searchByContent'),
               this.queryInfo
             )
               .then((resp)=>{

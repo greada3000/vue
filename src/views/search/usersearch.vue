@@ -7,13 +7,13 @@
             <el-card>
                 <div v-for="(item,i) in userlist" :key="i">
                     <el-card>
-                        <div slot="header" class="clearfix">
+                        <template #header><div class="clearfix">
                             <el-row :gutter="6">
                                 <el-col :span="7">
                                 <h3><router-link target="_blank" :to="'/userhome/'+item.userId ">{{item.username}}</router-link></h3>
                                 </el-col>
                             </el-row>
-                        </div> 
+                        </div></template>
 
                     </el-card>
                 </div>
@@ -50,7 +50,7 @@ export default {
       getUserList(keyword = undefined){
         // console.log('1111')
         // console.log('传参',keyword)
-        this.axios.post('http://localhost:8101/userController/selectAll',
+        this.axios.post(this.$api.user('/userController/selectAll'),
         keyword ?keyword: this.queryInfo
         )
       .then((resp)=>{

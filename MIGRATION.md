@@ -83,15 +83,17 @@ npm run preview
 - 移除 Vue 2 事件总线；该总线只发送事件、没有有效监听者。
 - 修复首页在后端没有返回圈子数据时访问空数组而崩溃的问题。
 
-## 后续开发注意事项
+## 后续开发注意事项（执行状态）
 
-- 新页面优先使用 Vue 3 Composition API 和 `<script setup>`；现有 Options API 页面可按需渐进迁移。
-- 新的 Element Plus 插槽使用 `#header`、`#footer`、`#append` 等 Vue 3 语法。
-- 对话框显示状态使用 `v-model`，不要继续使用 Vue 2 的 `:visible.sync`。
-- Element Plus 图标应从 `@element-plus/icons-vue` 导入，不再使用 `el-icon-*` 字符串类名。
-- 当前后端地址硬编码在各页面中。后续建议集中到 Axios 实例，并通过 `.env` 中的 `VITE_API_BASE_URL` 配置。
-- Vite 构建会提示主包超过 500 kB。后续可采用 Element Plus 按需导入和 Rollup 分包降低首屏体积。
-- `dist/` 是构建产物，不应手工修改。
+- 新页面继续优先使用 Vue 3 Composition API 和 `<script setup>`；现有 Options API 页面保持渐进迁移策略。
+- 已将有效的 Element Plus 插槽更新为 `#header`、`#footer`、`#append` 和 `#default` 语法。
+- 已将对话框的 `:visible.sync` 更新为 `v-model`。
+- 已从 `@element-plus/icons-vue` 导入管理页图标，移除有效代码中的 `el-icon-*` 写法。
+- 已将后端地址集中到 `src/services/api.js`，可通过 `.env` 变量覆盖。
+- 已启用 Element Plus 组件按需导入并配置 Rollup 分包，消除了超过 500 kB 的构建警告。
+- `dist/` 仍是构建产物，不应手工修改。
+
+详细执行记录见 [DEVELOPMENT_UPDATES.md](./DEVELOPMENT_UPDATES.md)。
 
 ## 已完成验证
 

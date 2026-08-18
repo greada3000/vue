@@ -7,14 +7,14 @@
             <el-card>
                 <div v-for="(item,i) in circlelist" :key="i">
                     <el-card>
-                        <div slot="header" class="clearfix">
+                        <template #header><div class="clearfix">
                             <el-row :gutter="6">
                                 <el-col :span="7">
                                 <h3><router-link target="_blank" :to="'/circle/'+item.circleId ">{{item.circleName}}</router-link></h3>
                                 <h5>{{item.detail}}</h5>
                                 </el-col>
                             </el-row> 
-                        </div> 
+                        </div></template>
                     </el-card>
                 </div>
             </el-card>
@@ -49,7 +49,7 @@ export default{
         getCircleList(keyword = undefined){
         // console.log('1111')
         // console.log('传参',keyword)
-        this.axios.post('http://localhost:8301/circleController/selectAll',
+        this.axios.post(this.$api.circle('/circleController/selectAll'),
         keyword ?keyword: this.queryInfo
         )
       .then((resp)=>{

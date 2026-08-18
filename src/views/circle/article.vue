@@ -9,17 +9,14 @@
                 <div v-for="(item,i) in articlelist" :key="i">
                     
                     <el-card>
-                        <div slot="header" class="clearfix">
+                        <template #header><div class="clearfix">
                             <span style="line-height: 36px"><router-link target="_blank" :to="'/articledetail/'+item.article.id "><h4>{{ item.article.title }}</h4></router-link></span>
                             <h5>作者：<router-link target="_blank" :to="'/userhome/'+item.user.userId ">{{item.user.username}}</router-link>
                               | 圈子： <router-link target="_blank" :to="'/circle/'+item.circle.circleId ">{{item.circle.circleName}}</router-link></h5>
-                        </div>
+                        </div></template>
                         <div class="article-content">
                             {{ item.article.content }}
                         </div>
-                        <!-- <div slot="footer" class="clearfix">
-                            <el-button type="text" class="pull-right">Read More</el-button>
-                        </div> -->
 
                     </el-card>
                 </div>
@@ -54,7 +51,7 @@ export default{
     },
     methods:{
         getMyArticle(){
-            this.axios.post('http://localhost:8201/articleController/searchByCircle/'+this.$route.params.id)
+            this.axios.post(this.$api.article('/articleController/searchByCircle/'+this.$route.params.id))
             .then((resp)=>{
                 let data=resp.data;
                 if(data.code==200){

@@ -4,19 +4,17 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </nav> -->
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
 <script>
-    export default {
-    	name:'App',
-      created(){
-        this.$store.commit('initUser')
-      }
-    }
+export default {
+  name: "App",
+  created() {
+    this.$store.commit("initUser");
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

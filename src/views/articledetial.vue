@@ -10,7 +10,7 @@
         <el-col class="center-search" :span="12">
             <div class="grid-content bg-purple">
             <el-input placeholder="请输入内容"  class="input-with-select">
-                <el-button slot="append" icon="el-icon-search"></el-button>
+                <template #append><el-button>搜索</el-button></template>
             </el-input>
 
             </div></el-col>
@@ -108,7 +108,7 @@ export default {
         }
     },
     created(){
-        this.axios.get('http://localhost:8201/articleController/searchById/'+this.$route.params.aid)
+        this.axios.get(this.$api.article('/articleController/searchById/'+this.$route.params.aid))
       .then((resp)=>{
         let data=resp.data;
         console.log(data);
@@ -132,7 +132,7 @@ export default {
           this.$router.push({path:"/Manage"});
         },
         getReviewList(){
-            this.axios.post('http://localhost:8401/reviewController/searchReviewById/'+this.$route.params.aid)
+            this.axios.post(this.$api.review('/reviewController/searchReviewById/'+this.$route.params.aid))
             .then((resp)=>{
             let data=resp.data;
             if(data.code==200){
@@ -146,7 +146,7 @@ export default {
             if(this.review.content==''){
                 return
             }
-            this.axios.post('http://localhost:8401/reviewController/addOrUpdateReview',this.review)
+            this.axios.post(this.$api.review('/reviewController/addOrUpdateReview'),this.review)
             .then((resp)=>{
             let data=resp.data;
             if (data.code==200) {

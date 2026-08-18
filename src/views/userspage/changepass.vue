@@ -45,7 +45,7 @@
         handleSubmit() {
             this.$refs.form.validate(valid => {
             if (valid) {
-                this.axios.post('http://localhost:8101/userController/changepass',this.password)
+                this.axios.post(this.$api.user('/userController/changepass'),this.password)
                 .then((resp)=>{
                 let data=resp.data;
                 if(data.code==200){

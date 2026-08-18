@@ -34,7 +34,7 @@
     },
     methods: {
       Login(loginForm) {
-        this.axios.post('http://localhost:8101/userController/login',this.loginForm)
+        this.axios.post(this.$api.user('/userController/login'),this.loginForm)
         .then((resp)=>{
           let data=resp.data;
           console.log(data);

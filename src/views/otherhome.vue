@@ -11,7 +11,7 @@
                 <el-col class="center-search" :span="12">
                     <div class="grid-content bg-purple">
                     <el-input v-model="keyword" placeholder="请输入内容"  class="input-with-select">
-                        <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+                        <template #append><el-button @click="search">搜索</el-button></template>
                     </el-input>
 
                     </div></el-col>
@@ -105,7 +105,7 @@ export default {
         console.log(key, keyPath);
         },
         getUser(){
-            this.axios.post('http://localhost:8101/userController/getUserById/'+this.$route.params.id)
+            this.axios.post(this.$api.user('/userController/getUserById/'+this.$route.params.id))
             .then((resp)=>{
                 let data=resp.data;
                 if(data.code==200){
@@ -116,7 +116,7 @@ export default {
             })
         },
         getconcern(){
-          this.axios.post('http://localhost:8110/userConController/getconcern',this.prelast)
+          this.axios.post(this.$api.relation('/userConController/getconcern'),this.prelast)
             .then((resp)=>{
               let data=resp.data;
               if(data.code==200){
@@ -136,7 +136,7 @@ export default {
           window.open(routeData.href, '_blank'); 
         },
         guanzhu(){
-          this.axios.post('http://localhost:8110/userConController/addOrUpdate',this.prelast)
+          this.axios.post(this.$api.relation('/userConController/addOrUpdate'),this.prelast)
             .then((resp)=>{
               let data=resp.data;
               if(data.code==200){
@@ -146,7 +146,7 @@ export default {
             this.is=1
         },
         quxiaoguanzhu(){
-          this.axios.post('http://localhost:8110/userConController/deleteCon',this.prelast)
+          this.axios.post(this.$api.relation('/userConController/deleteCon'),this.prelast)
             .then((resp)=>{
               let data=resp.data;
               if(data.code==200){

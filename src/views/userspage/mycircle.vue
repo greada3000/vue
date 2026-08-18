@@ -7,7 +7,7 @@
             <el-card>
                 <div v-for="(item,i) in circlelist" :key="i">
                     <el-card>
-                        <div slot="header" class="clearfix">
+                        <template #header><div class="clearfix">
                             <el-row :gutter="6">
                                 <el-col :span="7">
                                 <h3><router-link target="_blank" :to="'/circle/'+item.circleId ">{{item.circleName}}</router-link></h3>
@@ -17,7 +17,7 @@
                                     <el-button type="danger" @click="mydelete(item.circleId)">删除</el-button>
                                 </el-col>
                             </el-row> 
-                        </div> 
+                        </div></template>
                     </el-card>
                 </div>
             </el-card>
@@ -31,7 +31,7 @@
     </el-scrollbar>
     <el-dialog
         title="新建圈子"
-        :visible.sync="editDialogVisible"
+        v-model="editDialogVisible"
         append-to-body
         width="40%">
 
@@ -54,10 +54,10 @@
           
         </el-form>
 
-        <span slot="footer" class="dialog-footer">
+        <template #footer><span class="dialog-footer">
           <el-button @click="editDialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="edit">确 定</el-button>
-        </span>
+        </span></template>
       </el-dialog>
     </div>
   </template>
@@ -77,7 +77,7 @@
       },
       methods:{
         getcirclelist(){
-            this.axios.post('http://localhost:8301/circleController/ownercircle/'+this.$route.params.id)
+            this.axios.post(this.$api.circle('/circleController/ownercircle/'+this.$route.params.id))
             .then((resp)=>{
                 let data=resp.data;
                 console.log(data.data)
@@ -85,7 +85,7 @@
             })
         },
         mydelete(id){
-            this.axios.post('http://localhost:8301/circleController/delete/'+id)
+            this.axios.post(this.$api.circle('/circleController/delete/'+id))
             .then((resp)=>{
                 let data=resp.data;
                 console.log(data.data)
@@ -93,7 +93,7 @@
             })
         },
         edit(){
-            this.axios.post('http://localhost:8301/circleController/addcircle',this.editForm)
+            this.axios.post(this.$api.circle('/circleController/addcircle'),this.editForm)
             .then((resp)=>{
                 let data=resp.data;
                 if(data.code==200){

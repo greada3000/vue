@@ -11,7 +11,7 @@
                 <el-col :span="12">
                     <!-- <div class="grid-content bg-purple">
                     <el-input placeholder="请输入内容"  class="input-with-select">
-                        <el-button slot="append" icon="el-icon-search"></el-button>
+                        <template #append><el-button>搜索</el-button></template>
                     </el-input>
 
                     </div> -->
@@ -43,7 +43,7 @@
                 <el-col :span="20">
                     <div class="grid-content bg-purple">
                     <el-input v-model="keyword" placeholder="请输入内容"  class="input-with-select">
-                        <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+                        <template #append><el-button @click="search">搜索</el-button></template>
                     </el-input>
 
                     </div>

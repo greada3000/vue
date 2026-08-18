@@ -1,7 +1,7 @@
 <template>
   <div class="about">
     <!-- 面包屑导航 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
+    <el-breadcrumb separator=">">
       <el-breadcrumb-item :to="{ path: '/manage' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>管理列表</el-breadcrumb-item>
       <el-breadcrumb-item>圈子管理</el-breadcrumb-item>
@@ -11,7 +11,7 @@
         <el-row :gutter="20">
           <el-col :span="7">
             <el-input placeholder="请输入内容" class="input-with-select" v-model="queryInfo.query" clearable @clear="getUserList">
-              <el-button slot="append" icon="el-icon-search"  @click="getUserList"></el-button>
+              <template #append><el-button @click="getUserList">搜索</el-button></template>
             </el-input></el-col>
         </el-row>
 
@@ -25,15 +25,15 @@
             <el-table-column label="圈子简介" prop="detail"></el-table-column>
             <el-table-column label="作者ID" prop="owner"></el-table-column>
             <el-table-column label="操作" >
-              <template slot-scope="scope">
+              <template #default="scope">
                 <el-tooltip class="item" effect="dark" content="修改用户" placement="top" :enterable="false">
-                  <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.circleId)"></el-button>
+                  <el-button type="primary" @click="showEditDialog(scope.row.circleId)"><el-icon><EditIcon /></el-icon></el-button>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="圈子主页" placement="top" :enterable="false">
-                  <el-button type="warning" icon="el-icon-search" @click="tocirclehome(scope.row.circleId)"></el-button>
+                  <el-button type="warning" @click="tocirclehome(scope.row.circleId)"><el-icon><SearchIcon /></el-icon></el-button>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="删除圈子" placement="top" :enterable="false">
-                  <el-button type="danger" icon="el-icon-delete" @click="removeUserById(scope.row.circleId)"></el-button>
+                  <el-button type="danger" @click="removeUserById(scope.row.circleId)"><el-icon><DeleteIcon /></el-icon></el-button>
                 </el-tooltip>
               </template>
             </el-table-column>
@@ -74,7 +74,7 @@ created(){
 // 兴趣圈管理页面
 methods:{
   getUserList(){
-    this.axios.post('http://localhost:8301/circleController/selectAll',
+    this.axios.post(this.$api.circle('/circleController/selectAll'),
       this.queryInfo
     )
       .then((resp)=>{
@@ -118,7 +118,7 @@ methods:{
       if(result!=='confirm'){
         return this.$message.info('取消删除')
       }
-      this.axios.get('http://localhost:8101/userController/delStudentById/'+id)
+      this.axios.get(this.$api.user('/userController/delStudentById/'+id))
       .then((resp)=>{
           let data=resp.data;
           console.log(data);

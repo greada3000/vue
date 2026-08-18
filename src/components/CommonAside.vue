@@ -10,19 +10,16 @@
             router>
         <h3>管理系统</h3>
       <el-menu-item index="manage">
-        <i class="el-icon-s-home"></i>
-        <!-- <span slot="title">导航二</span> -->
         首页
       </el-menu-item>
-      <el-submenu index="2">
-        <template slot="title">
-        <i class="el-icon-location"></i>
-        <span slot="title">管理列表</span>
+      <el-sub-menu index="2">
+        <template #title>
+          <span>管理列表</span>
         </template>
           <el-menu-item index="userList">用户管理</el-menu-item>
           <el-menu-item index="adminList">圈子管理</el-menu-item>
           <el-menu-item index="articleList">推文管理</el-menu-item>
-    </el-submenu>
+    </el-sub-menu>
     </el-menu>
 </template>
 

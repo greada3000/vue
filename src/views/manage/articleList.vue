@@ -1,7 +1,7 @@
 <template>
   <div class="about">
     <!-- 面包屑导航 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
+    <el-breadcrumb separator=">">
       <el-breadcrumb-item :to="{ path: '/manage' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>管理列表</el-breadcrumb-item>
       <el-breadcrumb-item>推文管理</el-breadcrumb-item>
@@ -11,7 +11,7 @@
         <el-row :gutter="20">
           <el-col :span="10">
             <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getArticleList">
-              <el-button slot="append" icon="el-icon-search" @click="getArticleList"></el-button>
+              <template #append><el-button @click="getArticleList">搜索</el-button></template>
             </el-input>
           </el-col>
         </el-row>
@@ -23,27 +23,23 @@
             <el-table-column label="#" type="index"></el-table-column>
             <el-table-column label="文章id" prop="article.id"></el-table-column>
             <el-table-column label="文章题目" prop="article.title">
-              <template slot-scope="scope">
+              <template #default="scope">
                   <div v-html='scope.row.article.title'></div>
               </template>
             </el-table-column>
             <el-table-column label="文章内容" prop="article.content" show-overflow-tooltip>
-              <template slot-scope="scope">
+              <template #default="scope">
                   <div v-html='scope.row.article.content'></div>
               </template>
             </el-table-column>
             <el-table-column label="作者" prop="user.username"></el-table-column>
             <el-table-column label="操作" >
-              <template slot-scope="scope">
-                <!-- <el-tooltip class="item" effect="dark" content="文章详情" placement="top" :enterable="false">
-                  <el-button type="warning" icon="el-icon-search" 
-                  @click="showArticleDialog(scope.row.id,scope.row.userid,scope.row.title,scope.row.content)"></el-button>
-                </el-tooltip> -->
+              <template #default="scope">
                 <el-tooltip class="item" effect="dark" content="文章详情" placement="top" :enterable="false">
-                  <el-button type="warning" icon="el-icon-search" @click="toarticlehome(scope.row.article.id)"></el-button>
+                  <el-button type="warning" @click="toarticlehome(scope.row.article.id)"><el-icon><SearchIcon /></el-icon></el-button>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="删除文章" placement="top" :enterable="false">
-                  <el-button type="danger" icon="el-icon-delete" @click="removeArticelById(scope.row.article.id)"></el-button>
+                  <el-button type="danger" @click="removeArticelById(scope.row.article.id)"><el-icon><DeleteIcon /></el-icon></el-button>
                 </el-tooltip>
               </template>
             </el-table-column>
@@ -65,7 +61,7 @@
     </el-card>
     <!-- <el-dialog
         title="文章详情"
-        :visible.sync="DialogVisible"
+        v-model="DialogVisible"
         append-to-body
         width="40%">
 
@@ -80,9 +76,9 @@
           
         </el-form>
 
-        <span slot="footer" class="dialog-footer">
+        <template #footer><span class="dialog-footer">
           <el-button @click="DialogVisible = false">确定</el-button>
-        </span>
+        </span></template>
       </el-dialog> -->
   </div>
 </template>
@@ -113,7 +109,7 @@ created(){
 },
 methods:{
   getArticleList(){
-    this.axios.post('http://localhost:8201/articleController/searchByContent',
+    this.axios.post(this.$api.article('/articleController/searchByContent'),
       this.queryInfo
     )
       .then((resp)=>{
@@ -156,7 +152,7 @@ methods:{
       if(result!=='confirm'){
         return this.$message.info('取消删除')
       }
-      this.axios.get('http://localhost:8201/articleController/deleteById/'+id)
+      this.axios.get(this.$api.article('/articleController/deleteById/'+id))
       .then((resp)=>{
           let data=resp.data;
           console.log(data);
@@ -174,7 +170,6 @@ methods:{
     //   this.articleDetail.content=content;
     //   this.articleDetail.title=title;
     //   this.articleDetail.userId=userid
-    //   this.axios.get('http://localhost:8201/articleController/deleteById/'+userid)
     //   .then((resp)=>{
     //       let data=resp.data;
     //       console.log(data);

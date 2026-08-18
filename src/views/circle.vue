@@ -11,7 +11,7 @@
                 <el-col class="center-search" :span="12">
                     <div class="grid-content bg-purple">
                     <el-input v-model="keyword" placeholder="请输入内容"  class="input-with-select">
-                        <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+                        <template #append><el-button @click="search">搜索</el-button></template>
                     </el-input>
 
                     </div></el-col>
@@ -71,7 +71,7 @@
 
         <el-dialog
         title="新增文章"
-        :visible.sync="editDialogVisible"
+        v-model="editDialogVisible"
         append-to-body
         width="40%">
 
@@ -91,10 +91,10 @@
           
         </el-form>
 
-        <span slot="footer" class="dialog-footer">
+        <template #footer><span class="dialog-footer">
           <el-button @click="editDialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="save">确 定</el-button>
-        </span>
+        </span></template>
       </el-dialog>
     </div>
 </template>
@@ -137,7 +137,7 @@ export default {
         console.log(key, keyPath);
         },
         getCircle(){
-            this.axios.post('http://localhost:8301/circleController/circle/'+this.$route.params.id)
+            this.axios.post(this.$api.circle('/circleController/circle/'+this.$route.params.id))
             .then((resp)=>{
                 let data=resp.data;
                 if(data.code==200){
@@ -149,7 +149,7 @@ export default {
             })
         },
         getUser(){
-            this.axios.post('http://localhost:8101/userController/getUserById/'+this.circle.owner)
+            this.axios.post(this.$api.user('/userController/getUserById/'+this.circle.owner))
             .then((resp)=>{
                 let data=resp.data;
                 if(data.code==200){
@@ -174,7 +174,7 @@ export default {
           this.editDialogVisible=true
         },
         save(){
-          this.axios.post('http://localhost:8201/articleController/save',
+          this.axios.post(this.$api.article('/articleController/save'),
           this.article
           ) .then((resp)=>{
             let data=resp.data;
