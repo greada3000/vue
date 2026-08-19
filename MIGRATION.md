@@ -47,12 +47,6 @@ npm install
 npm run dev
 ```
 
-为兼容旧的使用习惯，也可以执行：
-
-```bash
-npm run serve
-```
-
 终端会输出访问地址，默认通常为 `http://localhost:5173/`。
 
 ## 构建与预览

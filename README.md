@@ -162,7 +162,6 @@ Vite 通常会使用 `http://localhost:5173`。如果 5173 已被占用，Vite �
 | 命令                  | 用途                      |
 | --------------------- | ------------------------- |
 | `npm.cmd run dev`     | 启动 Vite 开发服务器      |
-| `npm.cmd run serve`   | `dev` 的兼容别名          |
 | `npm.cmd run build`   | 生成生产构建到 `dist/`    |
 | `npm.cmd run preview` | 本地预览 `dist/` 生产构建 |
 
