@@ -10,7 +10,7 @@
                         <template #header><div class="clearfix">
                             <el-row :gutter="6">
                                 <el-col :span="7">
-                                <h3><router-link target="_blank" :to="'/circle/'+item.circleId ">{{item.circleName}}</router-link></h3>
+                                <h3><router-link target="_blank" :to="'/circles/'+item.circleId">{{item.circleName}}</router-link></h3>
                                 <h5>{{item.detail}}</h5>
                                 </el-col>
                                 <el-col :span="3">
@@ -78,7 +78,7 @@
       },
       methods:{
         getcirclelist(){
-            this.axios.post(this.$api.circle('/circleController/ownercircle/'+this.$route.params.id))
+            this.$api.circles.byOwner(this.$route.params.id)
             .then((resp)=>{
                 let data=resp.data;
                 console.log(data.data)
@@ -86,7 +86,7 @@
             })
         },
         mydelete(id){
-            this.axios.post(this.$api.circle('/circleController/delete/'+id))
+            this.$api.circles.remove(id)
             .then((resp)=>{
                 let data=resp.data;
                 console.log(data.data)
@@ -94,12 +94,12 @@
             })
         },
         edit(){
-            this.axios.post(this.$api.circle('/circleController/addcircle'),this.editForm)
+            this.$api.circles.create(this.editForm)
             .then((resp)=>{
                 let data=resp.data;
-                if(data.code==200){
+                if(data.success){
                     console.log(data.data)
-                    this.editForm={};
+                    this.editForm={ owner: this.$store.getters.getUser.name };
                     this.editDialogVisible= false;
                     this.$message({
                     message:'新增成功',

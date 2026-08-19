@@ -10,12 +10,12 @@
                     
                     <el-card>
                         <template #header><div class="clearfix">
-                            <span style="line-height: 36px"><router-link target="_blank" :to="'/articledetail/'+item.article.id "><h4>{{ item.article.title }}</h4></router-link></span>
-                            <h5>作者：<router-link target="_blank" :to="'/userhome/'+item.user.userId ">{{item.user.username}}</router-link>
-                              | 圈子： <router-link target="_blank" :to="'/circle/'+item.circle.circleId ">{{item.circle.circleName}}</router-link></h5>
+                            <span style="line-height: 36px"><router-link target="_blank" :to="'/articles/'+item.articleId"><h4>{{ item.title }}</h4></router-link></span>
+                            <h5>作者：<router-link target="_blank" :to="'/users/'+item.userId">{{item.username}}</router-link>
+                              | 圈子： <router-link target="_blank" :to="'/circles/'+item.circleId">{{item.circleId}}</router-link></h5>
                         </div></template>
                         <div class="article-content">
-                            {{ item.article.content }}
+                            {{ item.content }}
                         </div>
 
                     </el-card>
@@ -52,14 +52,14 @@ export default{
     },
     methods:{
         getMyArticle(){
-            this.axios.post(this.$api.article('/articleController/searchByUserId/'+this.$route.params.id))
+            this.$api.articles.byUser(this.$route.params.id)
             .then((resp)=>{
                 let data=resp.data;
-                if(data.code==200){
+                if(data.success){
                     console.log(data)
                     console.log(data.data)
-                    this.total=data.data.totalHit
-                    this.articlelist=data.data.data
+                    this.total=data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0
+                    this.articlelist=data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? data.data
                 }
             })
         }

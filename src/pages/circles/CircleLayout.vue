@@ -18,7 +18,7 @@
                 
                     <el-col class="right-entry" :span="2">
                         <div class="grid-content bg-purple">
-                            <span><router-link target="_blank" :to="'/myhome/'+$store.getters.getUser.name">{{$store.getters.getUser.username}}</router-link></span>
+                            <span><router-link target="_blank" :to="'/profile/'+$store.getters.getUser.name">{{$store.getters.getUser.username}}</router-link></span>
                         </div>
                         
                     </el-col>
@@ -59,8 +59,8 @@
             mode="horizontal" 
             @select="handleSelect"
             >
-            <el-menu-item index="home"><router-link :to="'/circle/'+$route.params.id">主页</router-link></el-menu-item>
-            <el-menu-item index="myarticle"><router-link :to="'/circle/'+$route.params.id+'/article' ">圈子文章</router-link></el-menu-item>
+            <el-menu-item index="home"><router-link :to="{ name: 'circle-overview', params: { id: $route.params.id } }">主页</router-link></el-menu-item>
+            <el-menu-item index="myarticle"><router-link :to="{ name: 'circle-articles', params: { id: $route.params.id } }">圈子文章</router-link></el-menu-item>
             <!-- <el-menu-item index="mydetail"><router-link :to="'/circle/'+$route.params.id+'/myinfo' ">圈子用户</router-link></el-menu-item> -->
             </el-menu>
             <el-main>
@@ -125,23 +125,23 @@ export default {
     },
     methods: {
         toLogin() {
-            this.$router.push({ path: "/Login" });
+            this.$router.push({ name: "login" });
         },
         LoginOut(){
           this.$store.commit('removeUser')
           this.$router.push({path:"/"});
         },
         toManage(){
-          this.$router.push({path:"/Manage"});
+          this.$router.push({name:"admin-dashboard"});
         },
         handleSelect(key, keyPath) {
         console.log(key, keyPath);
         },
         getCircle(){
-            this.axios.post(this.$api.circle('/circleController/circle/'+this.$route.params.id))
+            this.$api.circles.get(this.$route.params.id)
             .then((resp)=>{
                 let data=resp.data;
-                if(data.code==200){
+                if(data.success){
                     console.log(data)
                     console.log(data.data)
                     this.circle=data.data
@@ -150,10 +150,10 @@ export default {
             })
         },
         getUser(){
-            this.axios.post(this.$api.user('/userController/getUserById/'+this.circle.owner))
+            this.$api.users.get(this.circle.owner)
             .then((resp)=>{
                 let data=resp.data;
-                if(data.code==200){
+                if(data.success){
                     console.log(data)
                     console.log(data.data)
                     this.user=data.data
@@ -163,7 +163,7 @@ export default {
         search() {
           // 使用编程式导航跳转到目标路由，并传递搜索关键字作为参数
           // this.$router.push({ name: '/search', query: { keyword: this.keyword }})
-          let url='/search/article'
+          let url='/search/articles'
           let routeData = this.$router.resolve({ 
             path: url,
             query: { keyword: this.keyword }
@@ -175,9 +175,7 @@ export default {
           this.editDialogVisible=true
         },
         save(){
-          this.axios.post(this.$api.article('/articleController/save'),
-          this.article
-          ) .then((resp)=>{
+          this.$api.articles.create(this.article).then((resp)=>{
             let data=resp.data;
             console.log(data);
             this.editDialogVisible=false;

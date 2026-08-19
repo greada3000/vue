@@ -94,10 +94,10 @@ export default {
     },
     methods: {
       submitForm(ruleForm) {
-        this.axios.post(this.$api.user('/userController/register'),this.ruleForm)
+        this.$api.users.create(this.ruleForm)
         .then((resp)=>{
           let data=resp.data;
-          if(data.code==200){
+          if(data.success){
             this.loginForm={};
             this.$message({
               message:'注册成功',
@@ -117,7 +117,7 @@ export default {
         this.$refs[formName].resetFields();
       },
       toLogin(){
-        this.$router.push({path:'/Login'});
+        this.$router.push({name:'login'});
       }
     }
   }

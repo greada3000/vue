@@ -12,26 +12,26 @@
                   <span style="line-height: 36px"
                     ><router-link
                       target="_blank"
-                      :to="'/articledetail/' + item.article.id"
-                      ><div v-html="item.article.title"></div></router-link
+                      :to="'/articles/' + item.articleId"
+                      ><div v-html="item.title"></div></router-link
                   ></span>
                   <h5>
                     作者：<router-link
                       target="_blank"
-                      :to="'/userhome/' + item.user.userId"
-                      >{{ item.user.username }}</router-link
+                      :to="'/users/' + item.userId"
+                      >{{ item.username }}</router-link
                     >
                     | 圈子：
                     <router-link
                       target="_blank"
-                      :to="'/circle/' + item.circle.circleId"
-                      >{{ item.circle.circleName }}</router-link
+                      :to="'/circles/' + item.circleId"
+                      >{{ item.circleId }}</router-link
                     >
                   </h5>
                 </div></template
               >
               <div class="article-content">
-                {{ item.article.content }}
+                {{ item.content }}
               </div>
             </el-card>
           </div>
@@ -83,18 +83,15 @@ export default {
     getArticleList(keyword = undefined) {
       console.log("1111");
       console.log("传参", keyword);
-      this.axios
-        .post(
-          this.$api.article("/articleController/searchByContent"),
-          keyword ? keyword : this.queryInfo,
-        )
+      this.$api.articles
+        .search(keyword ? keyword : this.queryInfo)
         .then((resp) => {
           let data = resp.data;
-          if (data.code == 200) {
+          if (data.success) {
             this.loginForm = {};
             console.log(data.data.data);
-            this.total = data.data.totalHit;
-            this.articlelist = data.data.data;
+            this.total = data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
+            this.articlelist = data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? [];
           } else {
             return this.$message.error("获取文章列表失败");
           }

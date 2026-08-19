@@ -46,10 +46,10 @@
         handleSubmit() {
             this.$refs.form.validate(valid => {
             if (valid) {
-                this.axios.post(this.$api.user('/userController/changepass'),this.password)
+                this.$api.users.changePassword(this.password.uid, this.password)
                 .then((resp)=>{
                 let data=resp.data;
-                if(data.code==200){
+                if(data.success){
                 this.password={
                     uid:this.$store.getters.getUser.name,
                 };

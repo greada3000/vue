@@ -18,7 +18,7 @@
                 
                     <el-col class="right-entry" :span="2">
                         <div class="grid-content bg-purple">
-                            <span><router-link target="_blank" :to="'/myhome/'+$store.getters.getUser.name">{{$store.getters.getUser.username}}</router-link></span>
+                            <span><router-link target="_blank" :to="'/profile/'+$store.getters.getUser.name">{{$store.getters.getUser.username}}</router-link></span>
                         </div>
                         
                     </el-col>
@@ -58,10 +58,10 @@
             mode="horizontal" 
             @select="handleSelect"
             >
-            <el-menu-item index="home"><router-link :to="'/userhome/'+$route.params.id">主页</router-link></el-menu-item>
-            <el-menu-item index="myarticle"><router-link :to="'/userhome/'+$route.params.id+'/hisarticle' ">TA的文章</router-link></el-menu-item>
-            <el-menu-item index="mydetail"><router-link :to="'/userhome/'+$route.params.id+'/hisconcern' ">TA的关注</router-link></el-menu-item>
-            <el-menu-item index="myfans"><router-link :to="'/userhome/'+$route.params.id+'/hisfans' ">TA的粉丝</router-link></el-menu-item>
+            <el-menu-item index="home"><router-link :to="{ name: 'user-profile', params: { id: $route.params.id } }">主页</router-link></el-menu-item>
+            <el-menu-item index="myarticle"><router-link :to="{ name: 'user-articles', params: { id: $route.params.id } }">TA的文章</router-link></el-menu-item>
+            <el-menu-item index="mydetail"><router-link :to="{ name: 'user-following', params: { id: $route.params.id } }">TA的关注</router-link></el-menu-item>
+            <el-menu-item index="myfans"><router-link :to="{ name: 'user-followers', params: { id: $route.params.id } }">TA的粉丝</router-link></el-menu-item>
           </el-menu>
             <el-main>
                 <router-view></router-view>
@@ -93,23 +93,23 @@ export default {
     },
     methods: {
         toLogin() {
-            this.$router.push({ path: "/Login" });
+            this.$router.push({ name: "login" });
         },
         LoginOut(){
           this.$store.commit('removeUser')
           this.$router.push({path:"/"});
         },
         toManage(){
-          this.$router.push({path:"/Manage"});
+          this.$router.push({name:"admin-dashboard"});
         },
         handleSelect(key, keyPath) {
         console.log(key, keyPath);
         },
         getUser(){
-            this.axios.post(this.$api.user('/userController/getUserById/'+this.$route.params.id))
+            this.$api.users.get(this.$route.params.id)
             .then((resp)=>{
                 let data=resp.data;
-                if(data.code==200){
+                if(data.success){
                     console.log(data)
                     console.log(data.data)
                     this.user=data.data
@@ -117,10 +117,10 @@ export default {
             })
         },
         getconcern(){
-          this.axios.post(this.$api.relation('/userConController/getconcern'),this.prelast)
+          this.$api.follows.status(this.prelast.preuser, this.prelast.lastuser)
             .then((resp)=>{
               let data=resp.data;
-              if(data.code==200){
+              if(data.success){
                     this.is=data.data
               }
             })
@@ -128,7 +128,7 @@ export default {
         search() {
           // 使用编程式导航跳转到目标路由，并传递搜索关键字作为参数
           // this.$router.push({ name: '/search', query: { keyword: this.keyword }})
-          let url='/search/article'
+          let url='/search/articles'
           let routeData = this.$router.resolve({ 
             path: url,
             query: { keyword: this.keyword }
@@ -137,20 +137,20 @@ export default {
           window.open(routeData.href, '_blank'); 
         },
         guanzhu(){
-          this.axios.post(this.$api.relation('/userConController/addOrUpdate'),this.prelast)
+          this.$api.follows.create(this.prelast.preuser, this.prelast.lastuser)
             .then((resp)=>{
               let data=resp.data;
-              if(data.code==200){
+              if(data.success){
                   console.log(data)
               }
             })
             this.is=1
         },
         quxiaoguanzhu(){
-          this.axios.post(this.$api.relation('/userConController/deleteCon'),this.prelast)
+          this.$api.follows.remove(this.prelast.preuser, this.prelast.lastuser)
             .then((resp)=>{
               let data=resp.data;
-              if(data.code==200){
+              if(data.success){
                 console.log(data)
               }
             })

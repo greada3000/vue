@@ -39,23 +39,21 @@
     },
     methods:{
       getUser(){
-        this.axios.post(this.$api.user('/userController/getUserById/'+this.$route.params.id))
+        this.$api.users.get(this.$route.params.id)
         .then((resp)=>{
           let data=resp.data;
-          if(data.code==200){
-            this.name=data.data.username
+          if(data.success){
+            this.user=data.data
             console.log(data.data.username)
           }
         })
       },
       search(){
-        this.axios.post(this.$api.user('/userController/addOrUpdateUser'),this.editForm)
+        this.$api.users.update({ ...this.user, userId: this.$route.params.id })
         .then((resp)=>{
           let data=resp.data;
-          if(data.code==200){
-            this.editForm={};
-            this.getUserList();
-            this.editDialogVisible= false;
+          if(data.success){
+            this.getUser();
             this.$message({
               message:'修改成功',
               type:'success'

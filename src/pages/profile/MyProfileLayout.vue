@@ -42,13 +42,13 @@
             mode="horizontal" 
             @select="handleSelect"
             >
-            <el-menu-item index="home"><router-link :to="'/myhome/'+$route.params.id">主页</router-link></el-menu-item>
-            <el-menu-item index="myarticle"><router-link :to="'/myhome/'+$route.params.id+'/myarticle' ">我的文章</router-link></el-menu-item>
-            <el-menu-item index="mydetail"><router-link :to="'/myhome/'+$route.params.id+'/myinfo' ">个人信息</router-link></el-menu-item>
-            <el-menu-item index="changepass"><router-link :to="'/myhome/'+$route.params.id+'/changepass' ">修改密码</router-link></el-menu-item>
-            <el-menu-item index="guanzhu"><router-link :to="'/myhome/'+$route.params.id+'/myconcern' ">我的关注</router-link></el-menu-item>
-            <el-menu-item index="fensi"><router-link :to="'/myhome/'+$route.params.id+'/myfans' ">我的粉丝</router-link></el-menu-item>
-            <el-menu-item index="3" ><router-link :to="'/myhome/'+$route.params.id+'/mycircle' ">我的圈子</router-link></el-menu-item>
+            <el-menu-item index="home"><router-link :to="{ name: 'my-profile', params: { id: $route.params.id } }">主页</router-link></el-menu-item>
+            <el-menu-item index="myarticle"><router-link :to="{ name: 'my-articles', params: { id: $route.params.id } }">我的文章</router-link></el-menu-item>
+            <el-menu-item index="mydetail"><router-link :to="{ name: 'profile-settings', params: { id: $route.params.id } }">个人信息</router-link></el-menu-item>
+            <el-menu-item index="changepass"><router-link :to="{ name: 'change-password', params: { id: $route.params.id } }">修改密码</router-link></el-menu-item>
+            <el-menu-item index="guanzhu"><router-link :to="{ name: 'my-following', params: { id: $route.params.id } }">我的关注</router-link></el-menu-item>
+            <el-menu-item index="fensi"><router-link :to="{ name: 'my-followers', params: { id: $route.params.id } }">我的粉丝</router-link></el-menu-item>
+            <el-menu-item index="3"><router-link :to="{ name: 'my-circles', params: { id: $route.params.id } }">我的圈子</router-link></el-menu-item>
             </el-menu>
             <el-main>
                 <router-view></router-view>
@@ -76,14 +76,14 @@ export default {
     },
     methods: {
         toLogin() {
-            this.$router.push({ path: "/Login" });
+            this.$router.push({ name: "login" });
         },
         LoginOut(){
           this.$store.commit('removeUser')
           this.$router.push({path:"/"});
         },
         toManage(){
-          this.$router.push({path:"/Manage"});
+          this.$router.push({name:"admin-dashboard"});
         },
         handleSelect(key, keyPath) {
         console.log(key, keyPath);
@@ -91,7 +91,7 @@ export default {
         search() {
           // 使用编程式导航跳转到目标路由，并传递搜索关键字作为参数
           // this.$router.push({ name: '/search', query: { keyword: this.keyword }})
-          let url='/search/article'
+          let url='/search/articles'
           let routeData = this.$router.resolve({ 
             path: url,
             query: { keyword: this.keyword }

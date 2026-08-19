@@ -2,7 +2,7 @@
   <div class="about">
     <!-- 面包屑导航 -->
     <el-breadcrumb separator=">">
-      <el-breadcrumb-item :to="{ path: '/manage' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ name: 'admin-dashboard' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>管理列表</el-breadcrumb-item>
       <el-breadcrumb-item>推文管理</el-breadcrumb-item>
     </el-breadcrumb>
@@ -21,25 +21,25 @@
         <el-scrollbar style="height:100%"> 
           <el-table :data="articlelist" border stripe>
             <el-table-column label="#" type="index"></el-table-column>
-            <el-table-column label="文章id" prop="article.id"></el-table-column>
-            <el-table-column label="文章题目" prop="article.title">
+            <el-table-column label="文章id" prop="articleId"></el-table-column>
+            <el-table-column label="文章题目" prop="title">
               <template #default="scope">
-                  <div v-html='scope.row.article.title'></div>
+                  <div v-html='scope.row.title'></div>
               </template>
             </el-table-column>
-            <el-table-column label="文章内容" prop="article.content" show-overflow-tooltip>
+            <el-table-column label="文章内容" prop="content" show-overflow-tooltip>
               <template #default="scope">
-                  <div v-html='scope.row.article.content'></div>
+                  <div v-html='scope.row.content'></div>
               </template>
             </el-table-column>
-            <el-table-column label="作者" prop="user.username"></el-table-column>
+            <el-table-column label="作者" prop="username"></el-table-column>
             <el-table-column label="操作" >
               <template #default="scope">
                 <el-tooltip class="item" effect="dark" content="文章详情" placement="top" :enterable="false">
-                  <el-button type="warning" @click="toarticlehome(scope.row.article.id)"><el-icon><SearchIcon /></el-icon></el-button>
+                  <el-button type="warning" @click="toarticlehome(scope.row.articleId)"><el-icon><SearchIcon /></el-icon></el-button>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="删除文章" placement="top" :enterable="false">
-                  <el-button type="danger" @click="removeArticelById(scope.row.article.id)"><el-icon><DeleteIcon /></el-icon></el-button>
+                  <el-button type="danger" @click="removeArticelById(scope.row.articleId)"><el-icon><DeleteIcon /></el-icon></el-button>
                 </el-tooltip>
               </template>
             </el-table-column>
@@ -110,16 +110,14 @@ created(){
 },
 methods:{
   getArticleList(){
-    this.axios.post(this.$api.article('/articleController/searchByContent'),
-      this.queryInfo
-    )
+    this.$api.articles.search(this.queryInfo)
       .then((resp)=>{
         let data=resp.data;
-        if(data.code==200){
+        if(data.success){
           this.loginForm={};
           console.log(data.data.data);
-          this.total=data.data.totalHit;
-          this.articlelist=data.data.data;
+          this.total=data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
+          this.articlelist=data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? [];
         }else{
             return this.$message.error('获取文章列表失败')
           }
@@ -135,7 +133,7 @@ methods:{
         this.getArticleList();
     },
     toarticlehome(id){
-      let url='/articledetail/'+id
+      let url='/articles/'+id
       let routeData = this.$router.resolve({ 
         path: url
       });
@@ -153,11 +151,11 @@ methods:{
       if(result!=='confirm'){
         return this.$message.info('取消删除')
       }
-      this.axios.get(this.$api.article('/articleController/deleteById/'+id))
+      this.$api.articles.remove(id)
       .then((resp)=>{
           let data=resp.data;
           console.log(data);
-          if(data.code==200){
+          if(data.success){
             this.getArticleList();
             return this.$message.success('删除成功')
           }else{

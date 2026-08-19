@@ -35,11 +35,11 @@ export default {
     },
     methods: {
       Login(loginForm) {
-        this.axios.post(this.$api.user('/userController/login'),this.loginForm)
+        this.$api.users.login(this.loginForm)
         .then((resp)=>{
           let data=resp.data;
           console.log(data);
-          if (data.code==200) {
+          if (data.success) {
             this.$store.dispatch('asyncUpdateUser',{name:data.data.userId,username:data.data.username,usertype:data.data.usertype,pic:data.data.userpic})
             this.loginForm={};
             this.$message({
@@ -47,7 +47,7 @@ export default {
               type:'success'
             })
             if(data.data.usertype){
-              this.$router.push({path:'/Manage'});
+              this.$router.push({name:'admin-dashboard'});
             }else{
               this.$router.push({path:'/'});
             }
@@ -66,7 +66,7 @@ export default {
         // this.$router.push({path:'/Manage'});
       },
       toRegister(){
-        this.$router.push({path:'/Register'});
+        this.$router.push({name:'register'});
       }
     }
   }

@@ -7,7 +7,7 @@
 			<el-container>
 				<el-header style="background-color: antiquewhite;">
 				
-				<span><router-link target="_blank" :to="'/myhome/'+$store.getters.getUser.name ">{{ $store.getters.getUser.username }}</router-link></span>
+				<span><router-link target="_blank" :to="'/profile/'+$store.getters.getUser.name">{{ $store.getters.getUser.username }}</router-link></span>
 				
 				
 				</el-header>

@@ -2,7 +2,7 @@
   <div class="about">
     <!-- 面包屑导航 -->
     <el-breadcrumb separator=">">
-      <el-breadcrumb-item :to="{ path: '/manage' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ name: 'admin-dashboard' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>管理列表</el-breadcrumb-item>
       <el-breadcrumb-item>圈子管理</el-breadcrumb-item>
     </el-breadcrumb>
@@ -75,18 +75,16 @@ created(){
 // 兴趣圈管理页面
 methods:{
   getUserList(){
-    this.axios.post(this.$api.circle('/circleController/selectAll'),
-      this.queryInfo
-    )
+    this.$api.circles.search(this.queryInfo)
       .then((resp)=>{
         let data=resp.data;
-        if(data.code==200){
+        if(data.success){
           this.loginForm={};
           console.log(data);
           console.log(data.data);
           console.log(data.data.records)
-          this.circlelist=data.data.records;
-          this.total=data.data.total;
+          this.circlelist=data.data.records ?? data.data.content ?? data.data.items ?? [];
+          this.total=data.data.total ?? data.data.totalElements ?? 0;
         }
 
       });
@@ -101,7 +99,7 @@ methods:{
         this.getUserList();
     },
     tocirclehome(id){
-      let url='/circle/'+id
+      let url='/circles/'+id
       let routeData = this.$router.resolve({ 
         path: url
       });
@@ -119,11 +117,11 @@ methods:{
       if(result!=='confirm'){
         return this.$message.info('取消删除')
       }
-      this.axios.get(this.$api.user('/userController/delStudentById/'+id))
+      this.$api.circles.remove(id)
       .then((resp)=>{
           let data=resp.data;
           console.log(data);
-          if(data.code==200){
+          if(data.success){
             this.getUserList();
             return this.$message.success('删除成功')
           }else{

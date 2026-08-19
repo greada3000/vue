@@ -19,7 +19,7 @@
                 
                     <el-col class="right-entry" :span="2">
                         <div class="grid-content bg-purple">
-                            <span><router-link target="_blank" :to="'/myhome/'+$store.getters.getUser.name">{{$store.getters.getUser.username}}</router-link></span>
+                            <span><router-link target="_blank" :to="'/profile/'+$store.getters.getUser.name">{{$store.getters.getUser.username}}</router-link></span>
                         </div>
                         
                     </el-col>
@@ -51,9 +51,9 @@
                 <el-col></el-col>
                 </el-row>
                     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-                    <el-menu-item index="1"><router-link :to="{path:'/search/article',query:{keyword:keyword}}">文章</router-link></el-menu-item>
-                    <el-menu-item index="2"><router-link :to="{path:'/search/circle',query:{keyword:keyword}}">圈子</router-link></el-menu-item>
-                    <el-menu-item index="3"><router-link :to="{path:'/search/user',query:{keyword:keyword}}">用户</router-link></el-menu-item>
+                    <el-menu-item index="1"><router-link :to="{name:'search-articles',query:{keyword:keyword}}">文章</router-link></el-menu-item>
+                    <el-menu-item index="2"><router-link :to="{name:'search-circles',query:{keyword:keyword}}">圈子</router-link></el-menu-item>
+                    <el-menu-item index="3"><router-link :to="{name:'search-users',query:{keyword:keyword}}">用户</router-link></el-menu-item>
                     </el-menu>
                 <router-view></router-view>
             </el-main>
@@ -80,18 +80,18 @@ export default {
                 console.log(key, keyPath);
             },
             toLogin() {
-            this.$router.push({ path: "/Login" });
+            this.$router.push({ name: "login" });
             },
             LoginOut(){
             this.$store.commit('removeUser')
             this.$router.push({path:"/"});
             },
             toManage(){
-            this.$router.push({path:"/Manage"});
+            this.$router.push({name:"admin-dashboard"});
             },
             search(activeIndex){
                 // console.log('点了')
-                let url='/search/article'
+                let url='/search/articles'
                 // console.log(bus)
                 this.$router.replace({
                     query:{keyword:this.keyword}

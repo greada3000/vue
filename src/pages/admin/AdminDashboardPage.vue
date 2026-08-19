@@ -25,7 +25,7 @@ export default {
     },
     methods: {
       tomyhome(){
-          let url='/myhome/'+this.$store.getters.getUser.name
+          let url='/profile/'+this.$store.getters.getUser.name
           this.$router.push({
             path:url
         });

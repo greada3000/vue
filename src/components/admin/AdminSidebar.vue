@@ -9,16 +9,16 @@
             active-text-color="#ffd04b"
             router>
         <h3>管理系统</h3>
-      <el-menu-item index="manage">
+      <el-menu-item index="/admin">
         首页
       </el-menu-item>
       <el-sub-menu index="2">
         <template #title>
           <span>管理列表</span>
         </template>
-          <el-menu-item index="userList">用户管理</el-menu-item>
-          <el-menu-item index="adminList">圈子管理</el-menu-item>
-          <el-menu-item index="articleList">推文管理</el-menu-item>
+          <el-menu-item index="/admin/users">用户管理</el-menu-item>
+          <el-menu-item index="/admin/circles">圈子管理</el-menu-item>
+          <el-menu-item index="/admin/articles">推文管理</el-menu-item>
     </el-sub-menu>
     </el-menu>
 </template>
@@ -41,7 +41,7 @@
     },
     computed: {
 			defaultActive: function(){
-				return this.$route.path.replace('/', '');
+				return this.$route.path;
 			}
 		},
   }

@@ -17,7 +17,7 @@
         
             <el-col class="right-entry" :span="2">
                 <div class="grid-content bg-purple">
-                    <span><router-link target="_blank" :to="'/myhome/'+$store.getters.getUser.username">{{$store.getters.getUser.username}}</router-link></span>
+                    <span><router-link target="_blank" :to="'/profile/'+$store.getters.getUser.name">{{$store.getters.getUser.username}}</router-link></span>
                 </div>
                 
             </el-col>
@@ -37,8 +37,8 @@
         <el-card>
             <h3>{{article.title}}</h3>
             <el-divider></el-divider>
-            <h5>作者：<router-link target="_blank" :to="'/userhome/'+user.userId ">{{user.username}}</router-link>
-               | 圈子： <router-link target="_blank" :to="'/circle/'+circle.circleId ">{{circle.circleName}}</router-link></h5>
+            <h5>作者：<router-link target="_blank" :to="'/users/'+article.userId">{{article.username}}</router-link>
+               | 圈子： <router-link target="_blank" :to="'/circles/'+article.circleId">{{article.circleId}}</router-link></h5>
             <el-divider></el-divider>
             {{article.content}}
             
@@ -60,7 +60,7 @@
             <div v-for="(item,i) in reviewlist" :key="i" class="author-title reply-father">
                 <el-card>
                     <div class="author-info">
-                    <router-link target="_blank" :to="'/userhome/'+item.user.userId "><span class="author-name">{{item.user.username}}:</span></router-link>
+                    <router-link target="_blank" :to="'/users/'+item.ownerId"><span class="author-name">{{item.ownerId}}:</span></router-link>
 
                     </div>
                     <div class="talk-box">
@@ -93,12 +93,6 @@ export default {
             article:{
 
             },
-            user:{
-
-            },
-            circle:{
-
-            },
             reviewlist:[],
             review:{
                 ownerId:this.$store.getters.getUser.name,
@@ -109,34 +103,32 @@ export default {
         }
     },
     created(){
-        this.axios.get(this.$api.article('/articleController/searchById/'+this.$route.params.aid))
+        this.$api.articles.get(this.$route.params.aid)
       .then((resp)=>{
         let data=resp.data;
         console.log(data);
         console.log(data.data);
-        this.article=data.data.article;
-        this.user=data.data.user;
-        this.circle=data.data.circle;
+        this.article=data.data;
       }),
       this.getReviewList()
       
     },
     methods: {
         toLogin() {
-            this.$router.push({ path: "/Login" });
+            this.$router.push({ name: "login" });
         },
         LoginOut(){
           this.$store.commit('removeUser')
           this.$router.push({path:"/"});
         },
         toManage(){
-          this.$router.push({path:"/Manage"});
+          this.$router.push({name:"admin-dashboard"});
         },
         getReviewList(){
-            this.axios.post(this.$api.review('/reviewController/searchReviewById/'+this.$route.params.aid))
+            this.$api.reviews.byArticle(this.$route.params.aid)
             .then((resp)=>{
             let data=resp.data;
-            if(data.code==200){
+            if(data.success){
                 this.reviewlist=data.data;
                 console.log(this.reviewlist);
 
@@ -147,10 +139,10 @@ export default {
             if(this.review.content==''){
                 return
             }
-            this.axios.post(this.$api.review('/reviewController/addOrUpdateReview'),this.review)
+            this.$api.reviews.create(this.review)
             .then((resp)=>{
             let data=resp.data;
-            if (data.code==200) {
+            if (data.success) {
                 this.$message({
                 message:'评论成功',
                 type:'success',

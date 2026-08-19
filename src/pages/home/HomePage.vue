@@ -20,7 +20,7 @@
          
             <el-col class="right-entry" :span="2">
                 <div class="grid-content bg-purple">
-                    <span v-if="$store.getters.getLoginStatus"><router-link target="_blank" :to="'/myhome/'+$store.getters.getUser.name">{{$store.getters.getUser.username}}</router-link></span>
+                    <span v-if="$store.getters.getLoginStatus"><router-link target="_blank" :to="'/profile/'+$store.getters.getUser.name">{{$store.getters.getUser.username}}</router-link></span>
                 </div>
                         
             </el-col>
@@ -40,7 +40,7 @@
 
               <el-row v-if="words.length">
                 <el-col v-for="word in words.slice(0, 6)" :key="word.circleId" :span="8" class="word">
-                  <router-link target="_blank" :to="'/circle/' + word.circleId">{{ word.circleName }}</router-link>
+                  <router-link target="_blank" :to="'/circles/' + word.circleId">{{ word.circleName }}</router-link>
                 </el-col>
               </el-row>
               <el-empty v-else description="暂无圈子数据" />
@@ -51,13 +51,13 @@
             <el-card style="width: 80%;">
               <template #header>
                 <div class="clearfix">
-                  <span style="line-height: 36px"><router-link target="_blank" :to="'/articledetail/'+item.article.id "><h4>{{ item.article.title }}</h4></router-link></span>
-                  <h5>作者：<router-link target="_blank" :to="'/userhome/'+item.user.userId ">{{item.user.username}}</router-link>
-                  | 圈子： <router-link target="_blank" :to="'/circle/'+item.circle.circleId ">{{item.circle.circleName}}</router-link></h5>
+                  <span style="line-height: 36px"><router-link target="_blank" :to="'/articles/'+item.articleId"><h4>{{ item.title }}</h4></router-link></span>
+                  <h5>作者：<router-link target="_blank" :to="'/users/'+item.userId">{{item.username}}</router-link>
+                  | 圈子： <router-link target="_blank" :to="'/circles/'+item.circleId">{{item.circleId}}</router-link></h5>
                 </div>
               </template>
               <div class="article-content">
-                  {{ item.article.content }}
+                  {{ item.content }}
               </div>
               <template #footer>
                 <div class="clearfix"><el-button link type="primary" class="pull-right">Read More</el-button></div>
@@ -123,29 +123,29 @@ export default {
     },
     methods: {
         toLogin() {
-            this.$router.push({ path: "/Login" });
+            this.$router.push({ name: "login" });
         },
         LoginOut(){
           this.$store.commit('removeUser')
           this.$router.push({path:"/"});
         },
         tomyhome(){
-          let url='/myhome/'+this.$store.getters.getUser.name
+          let url='/profile/'+this.$store.getters.getUser.name
           this.$router.resolve({
             path:url
         });
         },
         tomymanage(){
-          this.$router.push({path:'/Manage'});
+          this.$router.push({name:'admin-dashboard'});
         },
         getMainCircle(){
-          this.axios.post(this.$api.circle('/circleController/selectAll'),this.circle)
+          this.$api.circles.search(this.circle)
           .then((resp)=>{
                 let data=resp.data;
-                if(data.code==200){
+                if(data.success){
                   console.log(data)
                   console.log(data.data);
-                  this.words=data.data.records;
+                  this.words=data.data.records ?? data.data.content ?? data.data.items ?? [];
                 }
             })
         },
@@ -158,16 +158,14 @@ export default {
             this.getArticleList();
         },
         getArticleList(){
-          this.axios.post(this.$api.article('/articleController/searchByContent'),
-              this.queryInfo
-            )
+          this.$api.articles.search(this.queryInfo)
               .then((resp)=>{
                 let data=resp.data;
-                if(data.code==200){
+                if(data.success){
                   this.loginForm={};
                   console.log(data.data.data);
-                  this.total=data.data.totalHit;
-                  this.ArticleList=data.data.data;
+                  this.total=data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
+                  this.ArticleList=data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? [];
                 }else{
                     return this.$message.error('获取文章列表失败')
                   }
@@ -176,7 +174,7 @@ export default {
         search() {
           // 使用编程式导航跳转到目标路由，并传递搜索关键字作为参数
           // this.$router.push({ name: '/search', query: { keyword: this.keyword }})
-          let url='/search/article'
+          let url='/search/articles'
           let routeData = this.$router.resolve({ 
             path: url,
             query: { keyword: this.keyword }

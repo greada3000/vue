@@ -10,7 +10,7 @@
                         <template #header><div class="clearfix">
                             <el-row :gutter="6">
                                 <el-col :span="7">
-                                <h3><router-link target="_blank" :to="'/userhome/'+item.userId ">{{item.username}}</router-link></h3>
+                                <h3><router-link target="_blank" :to="'/users/'+item.userId">{{item.username}}</router-link></h3>
                                 </el-col>
 
                                 <el-col :span="3">
@@ -44,10 +44,10 @@
       },
       methods:{
         getfans(){
-            this.axios.post(this.$api.relation('/userConController/getpreuser/'+this.$route.params.id))
+            this.$api.follows.followers(this.$route.params.id)
             .then((resp)=>{
                 let data=resp.data;
-                if(data.code==200){
+                if(data.success){
                     console.log(data)
                     this.fanslist=data.data
                 }
@@ -58,10 +58,10 @@
                 preuser:id,
                 lastuser:this.$store.getters.getUser.name,
             }
-            this.axios.post(this.$api.relation('/userConController/deleteCon'),prelast)
+            this.$api.follows.remove(prelast.preuser, prelast.lastuser)
                 .then((resp)=>{
                 let data=resp.data;
-                if(data.code==200){
+                if(data.success){
                     console.log(data)
                     this.getfans()
                 }

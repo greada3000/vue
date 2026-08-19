@@ -2,7 +2,7 @@
     <div class="about">
       <!-- 面包屑导航 -->
       <el-breadcrumb separator=">">
-        <el-breadcrumb-item :to="{ path: '/manage' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ name: 'admin-dashboard' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>管理列表</el-breadcrumb-item>
         <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       </el-breadcrumb>
@@ -90,10 +90,10 @@ export default{
   },
   methods:{
     createUser(user) {
-        this.axios.post(this.$api.user('/userController/register'),user)
+        this.$api.users.create(user)
         .then((resp)=>{
           let data=resp.data;
-          if(data.code==200){
+          if(data.success){
             this.loginForm={};
             this.dialogVisible= false;
             this.$message({
@@ -111,19 +111,16 @@ export default{
 
       },
     getUserList(){
-      this.axios.post(this.$api.user('/userController/selectAll'),
-        this.queryInfo
-      )
+      this.$api.users.search(this.queryInfo)
         .then((resp)=>{
           let data=resp.data;
-          if(data.code==200){
+          if(data.success){
             this.loginForm={};
             // console.log(data);
             // console.log(data.data);
             // const res=data.data;
-            this.userlist=data.data.records;
-            this.total=data.data.total;
-            console.log(data.data.records);
+            this.userlist=data.data.records ?? data.data.content ?? data.data.items ?? [];
+            this.total=data.data.total ?? data.data.totalElements ?? 0;
             // console.log(res);
           }else{
             return this.$message.error('获取用户列表失败')
@@ -141,11 +138,11 @@ export default{
         this.getUserList();
     },
     showEditDialog(id){
-      this.axios.get(this.$api.user('/userController/getUserById/'+id))
+      this.$api.users.get(id)
       .then((resp)=>{
           let data=resp.data;
           console.log(data);
-          if(data.code==200){
+          if(data.success){
             this.editForm=data.data;
           }else{
             return this.$message.error('获取用户列表失败')
@@ -154,7 +151,7 @@ export default{
       this.editDialogVisible=true;
     },
     touserhome(id){
-      let url='/userhome/'+id
+      let url='/users/'+id
       let routeData = this.$router.resolve({ 
         path: url
       });
@@ -162,10 +159,10 @@ export default{
       window.open(routeData.href, '_blank'); 
     },
     edit(){
-      this.axios.post(this.$api.user('/userController/addOrUpdateUser'),this.editForm)
+      this.$api.users.update(this.editForm)
         .then((resp)=>{
           let data=resp.data;
-          if(data.code==200){
+          if(data.success){
             this.editForm={};
             this.getUserList();
             this.editDialogVisible= false;
@@ -192,11 +189,11 @@ export default{
       if(result!=='confirm'){
         return this.$message.info('取消删除')
       }
-      this.axios.get(this.$api.user('/userController/delStudentById/'+id))
+      this.$api.users.remove(id)
       .then((resp)=>{
           let data=resp.data;
           console.log(data);
-          if(data.code==200){
+          if(data.success){
             this.getUserList();
             return this.$message.success('删除成功')
           }else{
