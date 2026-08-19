@@ -1,195 +1,32 @@
 <template>
-    <div>
-        <el-container>
-            <el-header style="background-color: aquamarine;">
-                <el-row :gutter="20">
-                <el-col class="left-entry" :span="5">
-                    <div class="grid-content bg-purple">
-                    <span>他人主页</span>
-                </div></el-col>
-
-                <el-col class="center-search" :span="12">
-                    <div class="grid-content bg-purple">
-                    <el-input v-model="keyword" placeholder="请输入内容"  class="input-with-select">
-                        <template #append><el-button @click="search">搜索</el-button></template>
-                    </el-input>
-
-                    </div></el-col>
-                
-                    <el-col class="right-entry" :span="2">
-                        <div class="grid-content bg-purple">
-                            <span><router-link target="_blank" :to="'/profile/'+$store.getters.getUser.name">{{$store.getters.getUser.username}}</router-link></span>
-                        </div>
-                        
-                    </el-col>
-                    <el-col class="right-entry" :span="5">
-                    <div class="grid-content bg-purple">
-                        <!-- <el-image
-                        style="width: 100px; height: 100px"
-                        :src="url"
-                        :fit="fit"></el-image> -->
-                    
-                        <el-button type="primary"  @click="toManage" v-if="$store.getters.getUser.usertype">管理主页</el-button>
-                        <el-button type="danger"  @click="LoginOut" v-if="$store.getters.getLoginStatus">退出</el-button>
-                        <el-button type="primary"  @click="toLogin" v-else>登录/注册</el-button>
-                    
-                    </div>
-                </el-col>
-                </el-row>
-            </el-header>
-            <el-card>
-                <el-row :gutter="1">
-                    <el-col :span="2">
-                        <h3>{{ user.username }}</h3>
-                    </el-col>
-                    <el-col :span="3">
-                      <el-button type="danger"  @click="quxiaoguanzhu" v-if=is>取消关注</el-button>
-                        <el-button type="primary" @click="guanzhu" v-else>关注</el-button>
-                    </el-col>
-                    <el-col :span="18">
-                    </el-col>
-                </el-row>
-                
-                
-            </el-card>
-            
-            <el-menu :default-active="activeIndex" 
-            class="el-menu-demo" 
-            mode="horizontal" 
-            @select="handleSelect"
-            >
-            <el-menu-item index="home"><router-link :to="{ name: 'user-profile', params: { id: $route.params.id } }">主页</router-link></el-menu-item>
-            <el-menu-item index="myarticle"><router-link :to="{ name: 'user-articles', params: { id: $route.params.id } }">TA的文章</router-link></el-menu-item>
-            <el-menu-item index="mydetail"><router-link :to="{ name: 'user-following', params: { id: $route.params.id } }">TA的关注</router-link></el-menu-item>
-            <el-menu-item index="myfans"><router-link :to="{ name: 'user-followers', params: { id: $route.params.id } }">TA的粉丝</router-link></el-menu-item>
-          </el-menu>
-            <el-main>
-                <router-view></router-view>
-            </el-main>
-        </el-container>
-    </div>
+  <div class="inner-page">
+    <SiteHeader @search="search" />
+    <main class="page-shell">
+      <section class="profile-hero">
+        <div class="profile-identity"><span class="avatar">{{ avatarText }}</span><div><h1>{{ user.username || `用户 ${$route.params.id}` }}</h1><p>在拾光社区分享兴趣、思考与生活片段。</p></div></div>
+        <el-button :type="isFollowing ? 'default' : 'primary'" @click="toggleFollow">{{ isFollowing ? '已关注' : '+ 关注' }}</el-button>
+      </section>
+      <el-menu class="section-menu" mode="horizontal" :default-active="$route.name" router>
+        <el-menu-item index="user-profile" :route="{ name: 'user-profile', params: { id: $route.params.id } }">主页</el-menu-item>
+        <el-menu-item index="user-articles" :route="{ name: 'user-articles', params: { id: $route.params.id } }">TA 的文章</el-menu-item>
+        <el-menu-item index="user-following" :route="{ name: 'user-following', params: { id: $route.params.id } }">TA 的关注</el-menu-item>
+        <el-menu-item index="user-followers" :route="{ name: 'user-followers', params: { id: $route.params.id } }">TA 的粉丝</el-menu-item>
+      </el-menu>
+      <router-view />
+    </main>
+  </div>
 </template>
-
-
 <script>
-
+import SiteHeader from '@/components/common/SiteHeader.vue'
 export default {
-  name: 'PublicProfileLayout',
-    data() {
-        return{
-            activeIndex: 'home',
-            keyword:'',
-            is:0,
-            user:{},
-            prelast:{
-              preuser:this.$store.getters.getUser.name,
-              lastuser:this.$route.params.id,
-            }
-        }
-    },
-    created(){
-        this.getUser();
-        this.getconcern();
-    },
-    methods: {
-        toLogin() {
-            this.$router.push({ name: "login" });
-        },
-        LoginOut(){
-          this.$store.commit('removeUser')
-          this.$router.push({path:"/"});
-        },
-        toManage(){
-          this.$router.push({name:"admin-dashboard"});
-        },
-        handleSelect(key, keyPath) {
-        console.log(key, keyPath);
-        },
-        getUser(){
-            this.$api.users.get(this.$route.params.id)
-            .then((resp)=>{
-                let data=resp.data;
-                if(data.success){
-                    console.log(data)
-                    console.log(data.data)
-                    this.user=data.data
-                }
-            })
-        },
-        getconcern(){
-          this.$api.follows.status(this.prelast.preuser, this.prelast.lastuser)
-            .then((resp)=>{
-              let data=resp.data;
-              if(data.success){
-                    this.is=data.data
-              }
-            })
-        },
-        search() {
-          // 使用编程式导航跳转到目标路由，并传递搜索关键字作为参数
-          // this.$router.push({ name: '/search', query: { keyword: this.keyword }})
-          let url='/search/articles'
-          let routeData = this.$router.resolve({ 
-            path: url,
-            query: { keyword: this.keyword }
-          });
-          //必要操作，否则不会打开新页面
-          window.open(routeData.href, '_blank'); 
-        },
-        guanzhu(){
-          this.$api.follows.create(this.prelast.preuser, this.prelast.lastuser)
-            .then((resp)=>{
-              let data=resp.data;
-              if(data.success){
-                  console.log(data)
-              }
-            })
-            this.is=1
-        },
-        quxiaoguanzhu(){
-          this.$api.follows.remove(this.prelast.preuser, this.prelast.lastuser)
-            .then((resp)=>{
-              let data=resp.data;
-              if(data.success){
-                console.log(data)
-              }
-            })
-          this.is=0
-        }
-    }
+  name: 'PublicProfileLayout', components: { SiteHeader },
+  data: () => ({ user: {}, isFollowing: false }),
+  computed: { avatarText() { return (this.user.username || '拾').slice(0, 1) }, currentUserId() { return this.$store.getters.getUser?.name } },
+  created() { this.loadProfile() },
+  methods: {
+    search(keyword) { this.$router.push({ name: 'search-articles', query: { keyword } }) },
+    loadProfile() { this.$api.users.get(this.$route.params.id).then(({ data }) => { if (data.success) this.user = data.data }).catch(() => {}); if (this.currentUserId) this.$api.follows.status(this.currentUserId, this.$route.params.id).then(({ data }) => { if (data.success) this.isFollowing = Boolean(data.data) }).catch(() => {}) },
+    toggleFollow() { if (!this.currentUserId) return this.$router.push({ name: 'login' }); const request = this.isFollowing ? this.$api.follows.remove(this.currentUserId, this.$route.params.id) : this.$api.follows.create(this.currentUserId, this.$route.params.id); request.then(() => { this.isFollowing = !this.isFollowing; this.$message.success(this.isFollowing ? '关注成功' : '已取消关注') }) }
+  }
 }
 </script>
-
-<style lang="less" scoped>
-  .el-row {
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    margin-bottom: 20px;
-    height: 60px;
-  }
-  .el-col {
-    text-align:center;
-    border-radius: 4px;
-  }
-  .el-form-item {
-    margin-bottom: 0px;
-  }
-  .bg-purple-dark {
-    background: #99a9bf;
-  }
-  .bg-purple {
-    background: #d3dce6;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-  }
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-  }
-</style>

@@ -1,98 +1,44 @@
 <template>
-    <body id="poster">     
-        <el-form class="login-container" label-position="left" label-width="0px">
-          <div>
-            <h1 class="login_title">登录界面</h1>
-          </div>
+  <main class="auth-page">
+    <section class="auth-visual">
+      <router-link class="brand" to="/">
+        <span class="brand__mark"><el-icon><Sunrise /></el-icon></span>
+        <span class="brand__copy"><strong>拾光社区</strong><small>记录热爱 · 连接同好</small></span>
+      </router-link>
+      <div class="auth-quote"><h2>每一次真诚分享，<br />都会照亮另一颗心。</h2><p>回到熟悉的社区，继续记录你的生活、灵感与成长。</p></div>
+      <small>© 2026 拾光社区 · 友善交流，优质分享</small>
+    </section>
+    <section class="auth-panel">
+      <el-form class="auth-form" :model="loginForm" @submit.prevent="Login">
+        <h1>欢迎回来</h1>
+        <p class="auth-subtitle">登录后继续探索感兴趣的故事与圈子</p>
+        <el-form-item><el-input v-model.number="loginForm.userId" autocomplete="username" placeholder="账号" clearable /></el-form-item>
+        <el-form-item><el-input v-model="loginForm.password" type="password" autocomplete="current-password" placeholder="密码" show-password @keyup.enter="Login" /></el-form-item>
+        <el-button class="auth-submit" type="primary" :loading="submitting" @click="Login">登录</el-button>
+        <p class="auth-switch">还没有账号？<button type="button" @click="toRegister">立即注册</button></p>
+        <el-button text @click="$router.push('/')">先逛逛社区</el-button>
+      </el-form>
+    </section>
+  </main>
+</template>
 
-          <el-form-item label="">
-            <el-input v-model.number="loginForm.userId" autocomplete="off" placeholder="账号" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="">
-            <el-input type="password" v-model="loginForm.password" autocomplete="off" placeholder="密码" show-password></el-input>
-          </el-form-item>
-          <el-form-item style="width:100%;">
-            <el-button type="primary" style="width: 100%;" @click="Login">登录</el-button>
-          </el-form-item>
-          <el-button type="text" @click="toRegister">点击去注册</el-button>
-        </el-form>
-    </body>
-    
-  </template>
-  
-  <script>
-  
+<script>
+import { Sunrise } from '@element-plus/icons-vue'
 export default {
-  name: 'LoginPage',
-    name: 'Login',  
-    data() {
-      return {
-        loginForm: {
-          userId: '',
-          password: '',
-        }
-      }
+  name: 'LoginPage', components: { Sunrise },
+  data: () => ({ loginForm: { userId: '', password: '' }, submitting: false }),
+  methods: {
+    Login() {
+      if (!this.loginForm.userId || !this.loginForm.password) return this.$message.warning('请输入账号和密码')
+      this.submitting = true
+      this.$api.users.login(this.loginForm).then(({ data }) => {
+        if (!data.success) return this.$message.error(data.message || '登录失败')
+        this.$store.dispatch('asyncUpdateUser', { name: data.data.userId, username: data.data.username, usertype: data.data.usertype, pic: data.data.userpic })
+        this.$message.success('欢迎回来')
+        this.$router.push(data.data.usertype ? { name: 'admin-dashboard' } : { name: 'home' })
+      }).catch(() => this.$message.error('暂时无法登录，请确认后端服务已启动')).finally(() => { this.submitting = false })
     },
-    methods: {
-      Login(loginForm) {
-        this.$api.users.login(this.loginForm)
-        .then((resp)=>{
-          let data=resp.data;
-          console.log(data);
-          if (data.success) {
-            this.$store.dispatch('asyncUpdateUser',{name:data.data.userId,username:data.data.username,usertype:data.data.usertype,pic:data.data.userpic})
-            this.loginForm={};
-            this.$message({
-              message:'登陆成功',
-              type:'success'
-            })
-            if(data.data.usertype){
-              this.$router.push({name:'admin-dashboard'});
-            }else{
-              this.$router.push({path:'/'});
-            }
-            
-          } else {
-            this.$message({
-              message:data.message,
-              type:'error'
-            })
-            // console.log('submit!',this.loginForm);
-            // console.log('submit!',data);
-          }
-        });
-        
-
-        // this.$router.push({path:'/Manage'});
-      },
-      toRegister(){
-        this.$router.push({name:'register'});
-      }
-    }
+    toRegister() { this.$router.push({ name: 'register' }) }
   }
-  </script>
-
-<style>
-  #poster{
-    background-position: center;
-    height: 100%;
-    width: 100%;
-    background-size: cover;
-    position: fixed;
-  }
-  body{
-    margin: 0px;
-    padding: 0px;
-  }
-  .login-container{
-    border-radius: 15px;
-    background-clip: padding-box;
-    margin: 90px auto;
-    text-align: center;
-    width: 350px;
-    padding: 35px 35px 15px 35px;
-    background: #fff;
-    border: 1px solid #eaeaea;
-    box-shadow: 0 0 25px #cac6c6;
-  }
-</style>
+}
+</script>

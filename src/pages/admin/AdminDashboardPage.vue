@@ -1,49 +1,8 @@
 <template>
-    <div id="poster">
-
-      <h3>管理界面主页</h3>
-      <el-row>
-      <el-button>默认按钮</el-button>
-      <el-button type="primary">我的主页</el-button>
-      <el-button type="success"  @click="tomyhome">他人主页</el-button>
-      <el-button type="info">圈子详情</el-button>
-      <el-button type="warning">文章详情</el-button>
-      <el-button type="danger">危险按钮</el-button>
-    </el-row>
-    </div>
+  <div class="dashboard"><section class="admin-stat-grid"><article v-for="item in stats" :key="item.label" class="admin-stat"><div class="stat-heading"><span>{{ item.label }}</span><el-icon><component :is="item.icon" /></el-icon></div><strong>{{ item.value }}</strong><small>{{ item.note }}</small></article></section><section class="dashboard-grid"><el-card><template #header><div class="card-heading"><span>社区动态</span><el-button text>查看全部</el-button></div></template><div v-for="event in activities" :key="event.text" class="activity"><span class="activity-dot"></span><div><strong>{{ event.text }}</strong><p>{{ event.meta }}</p></div></div></el-card><el-card><template #header><span>快捷操作</span></template><div class="quick-actions"><el-button type="primary" @click="$router.push({ name: 'admin-users' })">管理用户</el-button><el-button @click="$router.push({ name: 'admin-circles' })">审核圈子</el-button><el-button @click="$router.push({ name: 'admin-articles' })">查看文章</el-button><el-button @click="$router.push('/')">返回社区</el-button></div></el-card></section></div>
 </template>
-
 <script>
-export default {
-    name: 'AdminDashboardPage',
-
-    data(){
-      return{
-        
-      }
-
-    },
-    methods: {
-      tomyhome(){
-          let url='/profile/'+this.$store.getters.getUser.name
-          this.$router.push({
-            path:url
-        });
-
-    }
-
-}
-}
-
+import { ChatLineSquare, Connection, Document, User } from '@element-plus/icons-vue'
+export default { name:'AdminDashboardPage', components:{ ChatLineSquare, Connection, Document, User }, data:()=>({ stats:[{label:'社区用户',value:'2,846',note:'较上周 +8.2%',icon:'User'},{label:'活跃圈子',value:'128',note:'本周新增 12',icon:'Connection'},{label:'已发布文章',value:'6,392',note:'今日新增 86',icon:'Document'},{label:'今日互动',value:'18,240',note:'评论与点赞',icon:'ChatLineSquare'}], activities:[{text:'“一书一世界”新增 36 位成员',meta:'12 分钟前 · 圈子动态'},{text:'用户「鹿与森」发布了新文章',meta:'28 分钟前 · 内容动态'},{text:'本周共创已有 128 人参与',meta:'1 小时前 · 运营活动'},{text:'系统完成社区内容巡检',meta:'2 小时前 · 安全中心'}] }) }
 </script>
-
-<style>
-#poster{
-  background-position: center;
-  height: 100%;
-  width: 100%;
-  background-size: cover;
-  position: fixed;
-  margin: 0px;
-  padding: 0px;
-}</style>
+<style scoped>.stat-heading,.card-heading{display:flex;align-items:center;justify-content:space-between}.stat-heading{color:var(--muted)}.stat-heading .el-icon{width:36px;height:36px;border-radius:11px;background:var(--brand-soft);color:var(--brand);font-size:18px}.dashboard-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-top:18px}.activity{display:flex;gap:14px;padding:15px 2px;border-bottom:1px solid var(--line)}.activity:last-child{border-bottom:0}.activity-dot{width:9px;height:9px;margin-top:6px;border-radius:50%;background:var(--brand)}.activity p{margin:5px 0 0;color:var(--muted);font-size:12px}.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}.quick-actions .el-button{height:48px;margin:0}@media(max-width:900px){.dashboard-grid{grid-template-columns:1fr}}</style>

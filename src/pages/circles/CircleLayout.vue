@@ -1,230 +1,33 @@
 <template>
-    <div>
-        <el-container>
-            <el-header style="background-color: aquamarine;">
-                <el-row :gutter="20">
-                <el-col class="left-entry" :span="5">
-                    <div class="grid-content bg-purple">
-                    <span>{{$route.params.id}}兴趣圈主页</span>
-                </div></el-col>
-
-                <el-col class="center-search" :span="12">
-                    <div class="grid-content bg-purple">
-                    <el-input v-model="keyword" placeholder="请输入内容"  class="input-with-select">
-                        <template #append><el-button @click="search">搜索</el-button></template>
-                    </el-input>
-
-                    </div></el-col>
-                
-                    <el-col class="right-entry" :span="2">
-                        <div class="grid-content bg-purple">
-                            <span><router-link target="_blank" :to="'/profile/'+$store.getters.getUser.name">{{$store.getters.getUser.username}}</router-link></span>
-                        </div>
-                        
-                    </el-col>
-                    <el-col class="right-entry" :span="5">
-                    <div class="grid-content bg-purple">
-                        <!-- <el-image
-                        style="width: 100px; height: 100px"
-                        :src="url"
-                        :fit="fit"></el-image> -->
-                    
-                        <el-button type="primary"  @click="toManage" v-if="$store.getters.getUser.usertype">管理主页</el-button>
-                        <el-button type="danger"  @click="LoginOut" v-if="$store.getters.getLoginStatus">退出</el-button>
-                        <el-button type="primary"  @click="toLogin" v-else>登录/注册</el-button>
-                    
-                    </div>
-                </el-col>
-                </el-row>
-            </el-header>
-            <el-card>
-                <el-row :gutter="1">
-                    <el-col :span="13">
-                        <h3>{{circle.circleName}}</h3>
-                        {{ circle.detail }}
-                    </el-col>
-                    <el-col :span="3">
-                      <el-button type="danger"  @click="no" v-if=is>退出</el-button>
-                      <el-button type="primary" @click="isconcent" v-else>加入</el-button>
-                    </el-col>
-                    <el-col :span="10">
-                      <el-button type="primary"  @click="toSave">新建文章</el-button>
-                    </el-col>
-                </el-row>
-                
-                
-            </el-card>
-            <el-menu :default-active="activeIndex" 
-            class="el-menu-demo" 
-            mode="horizontal" 
-            @select="handleSelect"
-            >
-            <el-menu-item index="home"><router-link :to="{ name: 'circle-overview', params: { id: $route.params.id } }">主页</router-link></el-menu-item>
-            <el-menu-item index="myarticle"><router-link :to="{ name: 'circle-articles', params: { id: $route.params.id } }">圈子文章</router-link></el-menu-item>
-            <!-- <el-menu-item index="mydetail"><router-link :to="'/circle/'+$route.params.id+'/myinfo' ">圈子用户</router-link></el-menu-item> -->
-            </el-menu>
-            <el-main>
-                <router-view></router-view>
-            </el-main>
-        </el-container>
-
-
-        <el-dialog
-        title="新增文章"
-        v-model="editDialogVisible"
-        append-to-body
-        width="40%">
-
-        <el-form ref="editFormref" :model="article" label-width="80px">
-          <el-form-item label="文章标题">
-            <el-input v-model="article.title" style="width: 450px;"></el-input>
-          </el-form-item>
-          <el-form-item label="文章内容">
-            <el-input type="textarea"
-            :rows="2"
-            placeholder="请输入内容"
-            v-model="article.content"
-            style="width: 450px;">
-          </el-input>
-          </el-form-item>
-
-          
-        </el-form>
-
-        <template #footer><span class="dialog-footer">
-          <el-button @click="editDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="save">确 定</el-button>
-        </span></template>
-      </el-dialog>
-    </div>
+  <div class="inner-page">
+    <SiteHeader @search="search" @write="openEditor" />
+    <main class="page-shell">
+      <section class="profile-hero circle-hero">
+        <div class="profile-identity"><span class="avatar">{{ (circle.circleName || '圈').slice(0, 1) }}</span><div><p class="eyebrow">兴趣圈子</p><h1>{{ circle.circleName || `圈子 ${$route.params.id}` }}</h1><p>{{ circle.detail || '和有共同兴趣的人一起交流、记录与成长。' }}</p></div></div>
+        <div><el-button @click="joined = !joined">{{ joined ? '已加入' : '+ 加入圈子' }}</el-button><el-button type="primary" @click="openEditor">写文章</el-button></div>
+      </section>
+      <el-menu class="section-menu" mode="horizontal" :default-active="$route.name" router>
+        <el-menu-item index="circle-overview" :route="{ name: 'circle-overview', params: { id: $route.params.id } }">圈子主页</el-menu-item>
+        <el-menu-item index="circle-articles" :route="{ name: 'circle-articles', params: { id: $route.params.id } }">全部文章</el-menu-item>
+      </el-menu>
+      <router-view />
+    </main>
+    <el-dialog v-model="editorVisible" title="在圈子里写文章" width="min(620px, 92vw)">
+      <el-form :model="article" label-position="top"><el-form-item label="文章标题"><el-input v-model="article.title" placeholder="给你的故事起一个好标题" /></el-form-item><el-form-item label="正文"><el-input v-model="article.content" type="textarea" :rows="8" placeholder="分享真实、有价值的内容…" /></el-form-item></el-form>
+      <template #footer><el-button @click="editorVisible = false">取消</el-button><el-button type="primary" @click="save">发布文章</el-button></template>
+    </el-dialog>
+  </div>
 </template>
-
-
 <script>
-
+import SiteHeader from '@/components/common/SiteHeader.vue'
 export default {
-  name: 'CircleLayout',
-    data() {
-        return{
-            activeIndex: 'home',
-            keyword:'',
-            circle:{},
-            user:{},
-            is:0,
-            editDialogVisible:false,
-            article:{
-              circle:this.$route.params.id,
-              userid:this.$store.getters.getUser.name,
-              username:this.$store.getters.getUser.username,
-            }
-        }
-    },
-    created(){
-        this.getCircle();
-        
-    },
-    methods: {
-        toLogin() {
-            this.$router.push({ name: "login" });
-        },
-        LoginOut(){
-          this.$store.commit('removeUser')
-          this.$router.push({path:"/"});
-        },
-        toManage(){
-          this.$router.push({name:"admin-dashboard"});
-        },
-        handleSelect(key, keyPath) {
-        console.log(key, keyPath);
-        },
-        getCircle(){
-            this.$api.circles.get(this.$route.params.id)
-            .then((resp)=>{
-                let data=resp.data;
-                if(data.success){
-                    console.log(data)
-                    console.log(data.data)
-                    this.circle=data.data
-                    this.getUser()
-                }
-            })
-        },
-        getUser(){
-            this.$api.users.get(this.circle.owner)
-            .then((resp)=>{
-                let data=resp.data;
-                if(data.success){
-                    console.log(data)
-                    console.log(data.data)
-                    this.user=data.data
-                }
-            })
-        },
-        search() {
-          // 使用编程式导航跳转到目标路由，并传递搜索关键字作为参数
-          // this.$router.push({ name: '/search', query: { keyword: this.keyword }})
-          let url='/search/articles'
-          let routeData = this.$router.resolve({ 
-            path: url,
-            query: { keyword: this.keyword }
-          });
-          //必要操作，否则不会打开新页面
-          window.open(routeData.href, '_blank'); 
-        },
-        toSave(){
-          this.editDialogVisible=true
-        },
-        save(){
-          this.$api.articles.create(this.article).then((resp)=>{
-            let data=resp.data;
-            console.log(data);
-            this.editDialogVisible=false;
-            this.$message({
-              message:'新增成功',
-              type:'success'
-            })
-          })
-        },
-        no(){
-          this.is=0
-        },
-        isconcent(){
-          this.is=1
-        }
-    }
+  name: 'CircleLayout', components: { SiteHeader },
+  data() { return { circle: {}, joined: false, editorVisible: false, article: { title: '', content: '', circle: this.$route.params.id, userid: this.$store.getters.getUser?.name, username: this.$store.getters.getUser?.username } } },
+  created() { this.$api.circles.get(this.$route.params.id).then(({ data }) => { if (data.success) this.circle = data.data }).catch(() => {}) },
+  methods: {
+    search(keyword) { this.$router.push({ name: 'search-articles', query: { keyword } }) },
+    openEditor() { if (!this.$store.getters.getLoginStatus) return this.$router.push({ name: 'login' }); this.editorVisible = true },
+    save() { if (!this.article.title || !this.article.content) return this.$message.warning('请填写标题和正文'); this.$api.articles.create(this.article).then(({ data }) => { if (data.success) { this.editorVisible = false; this.$message.success('发布成功'); this.$router.push({ name: 'circle-articles', params: { id: this.$route.params.id } }) } }) }
+  }
 }
 </script>
-
-<style lang="less" scoped>
-  .el-row {
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    margin-bottom: 20px;
-    height: 60px;
-  }
-  .el-col {
-    text-align:center;
-    border-radius: 4px;
-  }
-  .el-form-item {
-    margin-bottom: 0px;
-  }
-  .bg-purple-dark {
-    background: #99a9bf;
-  }
-  .bg-purple {
-    background: #d3dce6;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-  }
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-  }
-</style>
