@@ -7,29 +7,21 @@
         <el-card v-if="articlelist">
           <div v-for="(item, i) in articlelist" :key="i">
             <el-card>
-              <template #header
-                ><div class="clearfix">
-                  <span style="line-height: 36px"
-                    ><router-link
-                      target="_blank"
-                      :to="'/articles/' + item.articleId"
-                      ><div v-html="item.title"></div></router-link
-                  ></span>
+              <template #header>
+                <div class="clearfix">
+                  <span style="line-height: 36px">
+                    <router-link target="_blank" :to="'/articles/' + item.articleId">
+                      <div v-html="item.title"></div>
+                    </router-link>
+                  </span>
                   <h5>
-                    作者：<router-link
-                      target="_blank"
-                      :to="'/users/' + item.userId"
-                      >{{ item.username }}</router-link
-                    >
+                    作者：
+                    <router-link target="_blank" :to="'/users/' + item.userId">{{ item.username }}</router-link>
                     | 圈子：
-                    <router-link
-                      target="_blank"
-                      :to="'/circles/' + item.circleId"
-                      >{{ item.circleId }}</router-link
-                    >
+                    <router-link target="_blank" :to="'/circles/' + item.circleId">{{ item.circleId }}</router-link>
                   </h5>
-                </div></template
-              >
+                </div>
+              </template>
               <div class="article-content">
                 {{ item.content }}
               </div>
@@ -43,7 +35,7 @@
 
 <script>
 export default {
-  name: 'ArticleSearchResults',
+  name: "ArticleSearchResults",
   data() {
     return {
       queryInfo: {
@@ -83,19 +75,17 @@ export default {
     getArticleList(keyword = undefined) {
       console.log("1111");
       console.log("传参", keyword);
-      this.$api.articles
-        .search(keyword ? keyword : this.queryInfo)
-        .then((resp) => {
-          let data = resp.data;
-          if (data.success) {
-            this.loginForm = {};
-            console.log(data.data.data);
-            this.total = data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
-            this.articlelist = data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? [];
-          } else {
-            return this.$message.error("获取文章列表失败");
-          }
-        });
+      this.$api.articles.search(keyword ? keyword : this.queryInfo).then((resp) => {
+        let data = resp.data;
+        if (data.success) {
+          this.loginForm = {};
+          console.log(data.data.data);
+          this.total = data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
+          this.articlelist = data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? [];
+        } else {
+          return this.$message.error("获取文章列表失败");
+        }
+      });
     },
   },
 };
@@ -105,6 +95,7 @@ export default {
 .el-scrollbar__wrap {
   overflow-x: hidden;
 }
+
 .article-content {
   /* 其他样式 */
   /* 限制文章内容宽度为一行 */

@@ -1,27 +1,38 @@
 <template>
-    <div id="poster" class="scrollbar">
-        <el-scrollbar style="height:75%">
-        <!-- <span>wode搜索主页</span> -->
-        <!-- <span>{{$route.params.id}}</span> -->
-        <el-col :span="20" :offset="2">
+  <div id="poster" class="scrollbar">
+    <el-scrollbar style="height: 75%">
+      <!-- <span>wode搜索主页</span> -->
+      <!-- <span>{{$route.params.id}}</span> -->
+      <el-col :span="20" :offset="2">
+        <el-card>
+          <div v-for="(item, i) in articlelist" :key="i">
             <el-card>
-                
-                <div v-for="(item,i) in articlelist" :key="i">
-                    
-                    <el-card>
-                        <template #header><div class="clearfix">
-                            <span style="line-height: 36px"><router-link target="_blank" :to="'/articles/'+item.articleId"><h4>{{ item.title }}</h4></router-link></span>
-                            <h5>作者：<router-link target="_blank" :to="'/users/'+item.userId">{{item.username}}</router-link>
-                              | 圈子： <router-link target="_blank" :to="'/circles/'+item.circleId">{{item.circleId}}</router-link></h5>
-                        </div></template>
-                        <div class="article-content">
-                            {{ item.content }}
-                        </div>
-
-                    </el-card>
+              <template #header>
+                <div class="clearfix">
+                  <span style="line-height: 36px">
+                    <router-link target="_blank" :to="'/articles/' + item.articleId">
+                      <h4>{{ item.title }}</h4>
+                    </router-link>
+                  </span>
+                  <h5>
+                    作者：
+                    <router-link target="_blank" :to="'/users/' + item.userId">
+                      {{ item.username }}
+                    </router-link>
+                    | 圈子：
+                    <router-link target="_blank" :to="'/circles/' + item.circleId">
+                      {{ item.circleId }}
+                    </router-link>
+                  </h5>
                 </div>
+              </template>
+              <div class="article-content">
+                {{ item.content }}
+              </div>
             </el-card>
-        </el-col>
+          </div>
+        </el-card>
+      </el-col>
     </el-scrollbar>
 
     <!-- <el-pagination
@@ -33,45 +44,41 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="total">
           </el-pagination> -->
-    </div>
+  </div>
 </template>
 
-
-
 <script>
-export default{
-    name: 'ProfileArticlesPage',
-    data() {
-        return {
-            articlelist:[],
-            total:0
+export default {
+  name: "ProfileArticlesPage",
+  data() {
+    return {
+      articlelist: [],
+      total: 0,
+    };
+  },
+  created() {
+    this.getMyArticle();
+  },
+  methods: {
+    getMyArticle() {
+      this.$api.articles.byUser(this.$route.params.id).then((resp) => {
+        let data = resp.data;
+        if (data.success) {
+          console.log(data);
+          console.log(data.data);
+          this.total = data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
+          this.articlelist = data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? data.data;
         }
+      });
     },
-    created(){
-        this.getMyArticle();
-    },
-    methods:{
-        getMyArticle(){
-            this.$api.articles.byUser(this.$route.params.id)
-            .then((resp)=>{
-                let data=resp.data;
-                if(data.success){
-                    console.log(data)
-                    console.log(data.data)
-                    this.total=data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0
-                    this.articlelist=data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? data.data
-                }
-            })
-        }
-    }
-}
-    
-
+  },
+};
 </script>
 <style>
 .el-scrollbar__wrap {
-   overflow-x: hidden; 
+  overflow-x: hidden;
 }
+
 .article-content {
   /* 其他样式 */
   /* 限制文章内容宽度为一行 */

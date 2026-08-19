@@ -1,2 +1,104 @@
-<template><section class="entity-home-panel"><div class="entity-copy"><span class="eyebrow">WELCOME</span><h2>欢迎来到 {{ $route.params.id }} 的空间</h2><p>这里会汇集最近发布的文章、加入的圈子和社区动态。选择上方标签继续探索。</p></div><div class="entity-stats"><div><strong>12</strong><span>文章</span></div><div><strong>8</strong><span>圈子</span></div><div><strong>126</strong><span>同好</span></div></div></section></template>
-<style scoped>.entity-home-panel{min-height:260px;display:flex;align-items:center;justify-content:space-between;gap:30px;padding:38px;border:1px solid var(--line);border-radius:20px;background:var(--surface)}.entity-copy{max-width:560px}.eyebrow{color:var(--brand);font-size:12px;font-weight:800;letter-spacing:.16em}.entity-copy h2{margin:12px 0;font-size:28px}.entity-copy p{margin:0;color:var(--muted);line-height:1.8}.entity-stats{display:flex;gap:14px}.entity-stats div{min-width:92px;padding:18px;text-align:center;border-radius:14px;background:var(--surface-soft)}.entity-stats strong,.entity-stats span{display:block}.entity-stats strong{font-size:24px}.entity-stats span{margin-top:5px;color:var(--muted);font-size:12px}@media(max-width:680px){.entity-home-panel{align-items:flex-start;flex-direction:column;padding:24px}.entity-stats{width:100%}.entity-stats div{min-width:0;flex:1;padding:12px}}</style>
+<template>
+  <section class="entity-home-panel">
+    <div class="entity-copy">
+      <span class="eyebrow">WELCOME</span>
+      <h2>欢迎来到 {{ $route.params.id }} 的空间</h2>
+      <p>这里会汇集最近发布的文章、加入的圈子和社区动态。选择上方标签继续探索。</p>
+    </div>
+    <div class="entity-stats">
+      <div>
+        <strong>12</strong>
+        <span>文章</span>
+      </div>
+      <div>
+        <strong>8</strong>
+        <span>圈子</span>
+      </div>
+      <div>
+        <strong>126</strong>
+        <span>同好</span>
+      </div>
+    </div>
+  </section>
+</template>
+<style scoped>
+.entity-home-panel {
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 38px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+}
+
+.entity-copy {
+  max-width: 560px;
+}
+
+.eyebrow {
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.entity-copy h2 {
+  margin: 12px 0;
+  font-size: 28px;
+}
+
+.entity-copy p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.entity-stats {
+  display: flex;
+  gap: 14px;
+}
+
+.entity-stats div {
+  min-width: 92px;
+  padding: 18px;
+  text-align: center;
+  border-radius: 14px;
+  background: var(--surface-soft);
+}
+
+.entity-stats strong,
+.entity-stats span {
+  display: block;
+}
+
+.entity-stats strong {
+  font-size: 24px;
+}
+
+.entity-stats span {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 680px) {
+  .entity-home-panel {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 24px;
+  }
+
+  .entity-stats {
+    width: 100%;
+  }
+
+  .entity-stats div {
+    min-width: 0;
+    flex: 1;
+    padding: 12px;
+  }
+}
+</style>

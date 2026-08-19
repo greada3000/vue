@@ -24,48 +24,53 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref } from "vue";
 
-const props = defineProps({ modelValue: Boolean })
-const emit = defineEmits(['update:modelValue', 'submit'])
-const formRef = ref()
-const form = reactive({ userId: '', username: '', password: '', checkPass: '' })
+const props = defineProps({ modelValue: Boolean });
+const emit = defineEmits(["update:modelValue", "submit"]);
+const formRef = ref();
+const form = reactive({
+  userId: "",
+  username: "",
+  password: "",
+  checkPass: "",
+});
 
 const visible = computed({
   get: () => props.modelValue,
-  set: (value) => emit('update:modelValue', value)
-})
+  set: (value) => emit("update:modelValue", value),
+});
 
 const validateUserId = (_rule, value, callback) => {
-  if (!value) return callback(new Error('账号不能为空'))
-  if (!Number.isInteger(value)) return callback(new Error('请输入数字值'))
-  if (value < 1 || value > 999999999) return callback(new Error('必须为8-9个数字'))
-  callback()
-}
+  if (!value) return callback(new Error("账号不能为空"));
+  if (!Number.isInteger(value)) return callback(new Error("请输入数字值"));
+  if (value < 1 || value > 999999999) return callback(new Error("必须为8-9个数字"));
+  callback();
+};
 
 const validatePassword = (_rule, value, callback) => {
-  if (!value) return callback(new Error('请输入密码'))
-  callback()
-}
+  if (!value) return callback(new Error("请输入密码"));
+  callback();
+};
 
 const validateConfirmation = (_rule, value, callback) => {
-  if (!value) return callback(new Error('请再次输入密码'))
-  if (value !== form.password) return callback(new Error('两次输入密码不一致!'))
-  callback()
-}
+  if (!value) return callback(new Error("请再次输入密码"));
+  if (value !== form.password) return callback(new Error("两次输入密码不一致!"));
+  callback();
+};
 
 const rules = {
-  userId: [{ validator: validateUserId, trigger: 'blur' }],
-  password: [{ validator: validatePassword, trigger: 'blur' }],
-  checkPass: [{ validator: validateConfirmation, trigger: 'blur' }]
-}
+  userId: [{ validator: validateUserId, trigger: "blur" }],
+  password: [{ validator: validatePassword, trigger: "blur" }],
+  checkPass: [{ validator: validateConfirmation, trigger: "blur" }],
+};
 
 const reset = () => {
-  formRef.value?.resetFields()
-}
+  formRef.value?.resetFields();
+};
 
 const submit = async () => {
-  const valid = await formRef.value?.validate().catch(() => false)
-  if (valid) emit('submit', { ...form })
-}
+  const valid = await formRef.value?.validate().catch(() => false);
+  if (valid) emit("submit", { ...form });
+};
 </script>

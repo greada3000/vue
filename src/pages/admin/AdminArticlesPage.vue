@@ -8,38 +8,46 @@
     </el-breadcrumb>
     <!-- 卡片视图区域 -->
     <el-card class="box-card">
-        <el-row :gutter="20">
-          <el-col :span="10">
-            <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getArticleList">
-              <template #append><el-button @click="getArticleList">搜索</el-button></template>
-            </el-input>
-          </el-col>
-        </el-row>
+      <el-row :gutter="20">
+        <el-col :span="10">
+          <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getArticleList">
+            <template #append><el-button @click="getArticleList">搜索</el-button></template>
+          </el-input>
+        </el-col>
+      </el-row>
 
-                  <!-- 文章列表 -->
-      <div style="height:400px;margin-top: 15px;" class="scrollbar">
-        <el-scrollbar style="height:100%"> 
+      <!-- 文章列表 -->
+      <div style="height: 400px; margin-top: 15px" class="scrollbar">
+        <el-scrollbar style="height: 100%">
           <el-table :data="articlelist" border stripe>
             <el-table-column label="#" type="index"></el-table-column>
             <el-table-column label="文章id" prop="articleId"></el-table-column>
             <el-table-column label="文章题目" prop="title">
               <template #default="scope">
-                  <div v-html='scope.row.title'></div>
+                <div v-html="scope.row.title"></div>
               </template>
             </el-table-column>
             <el-table-column label="文章内容" prop="content" show-overflow-tooltip>
               <template #default="scope">
-                  <div v-html='scope.row.content'></div>
+                <div v-html="scope.row.content"></div>
               </template>
             </el-table-column>
             <el-table-column label="作者" prop="username"></el-table-column>
-            <el-table-column label="操作" >
+            <el-table-column label="操作">
               <template #default="scope">
                 <el-tooltip class="item" effect="dark" content="文章详情" placement="top" :enterable="false">
-                  <el-button type="warning" @click="toarticlehome(scope.row.articleId)"><el-icon><SearchIcon /></el-icon></el-button>
+                  <el-button type="warning" @click="toarticlehome(scope.row.articleId)">
+                    <el-icon>
+                      <SearchIcon />
+                    </el-icon>
+                  </el-button>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="删除文章" placement="top" :enterable="false">
-                  <el-button type="danger" @click="removeArticelById(scope.row.articleId)"><el-icon><DeleteIcon /></el-icon></el-button>
+                  <el-button type="danger" @click="removeArticelById(scope.row.articleId)">
+                    <el-icon>
+                      <DeleteIcon />
+                    </el-icon>
+                  </el-button>
                 </el-tooltip>
               </template>
             </el-table-column>
@@ -47,17 +55,15 @@
         </el-scrollbar>
       </div>
 
-          <!-- 分页区域 -->
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="queryInfo.pageNo"
-            :page-sizes="[3, 4, 5, 10]"
-            :page-size="queryInfo.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total">
-          </el-pagination>
-
+      <!-- 分页区域 -->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="queryInfo.pageNo"
+        :page-sizes="[3, 4, 5, 10]"
+        :page-size="queryInfo.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"></el-pagination>
     </el-card>
     <!-- <el-dialog
         title="文章详情"
@@ -83,86 +89,80 @@
   </div>
 </template>
 <script>
-
-export default{
-  name: 'AdminArticlesPage',
-data(){
-  return{
-    queryInfo:{
-      query:'',
-      pageNo:1,
-      pageSize:3
-    },
-    articlelist:[],
-    total:0,
-    // DialogVisible:false,
-    // articleDetail:{
-    //   userId:0,
-    //   userName:"",
-    //   articleId:"",
-    //   title:"",
-    //   content:"",
-    // }
-  }
-},
-created(){
-  this.getArticleList()
-},
-methods:{
-  getArticleList(){
-    this.$api.articles.search(this.queryInfo)
-      .then((resp)=>{
-        let data=resp.data;
-        if(data.success){
-          this.loginForm={};
+export default {
+  name: "AdminArticlesPage",
+  data() {
+    return {
+      queryInfo: {
+        query: "",
+        pageNo: 1,
+        pageSize: 3,
+      },
+      articlelist: [],
+      total: 0,
+      // DialogVisible:false,
+      // articleDetail:{
+      //   userId:0,
+      //   userName:"",
+      //   articleId:"",
+      //   title:"",
+      //   content:"",
+      // }
+    };
+  },
+  created() {
+    this.getArticleList();
+  },
+  methods: {
+    getArticleList() {
+      this.$api.articles.search(this.queryInfo).then((resp) => {
+        let data = resp.data;
+        if (data.success) {
+          this.loginForm = {};
           console.log(data.data.data);
-          this.total=data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
-          this.articlelist=data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? [];
-        }else{
-            return this.$message.error('获取文章列表失败')
-          }
+          this.total = data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
+          this.articlelist = data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? [];
+        } else {
+          return this.$message.error("获取文章列表失败");
+        }
       });
-    
     },
-    handleSizeChange(newSize){
-      this.queryInfo.pageSize=newSize;
+    handleSizeChange(newSize) {
+      this.queryInfo.pageSize = newSize;
       this.getArticleList();
     },
-    handleCurrentChange(newPage){
-        this.queryInfo.pageNo=newPage;
-        this.getArticleList();
+    handleCurrentChange(newPage) {
+      this.queryInfo.pageNo = newPage;
+      this.getArticleList();
     },
-    toarticlehome(id){
-      let url='/articles/'+id
-      let routeData = this.$router.resolve({ 
-        path: url
+    toarticlehome(id) {
+      let url = "/articles/" + id;
+      let routeData = this.$router.resolve({
+        path: url,
       });
       //必要操作，否则不会打开新页面
-      window.open(routeData.href, '_blank'); 
+      window.open(routeData.href, "_blank");
     },
-    async removeArticelById(id){
+    async removeArticelById(id) {
       console.log(id);
-      const result=await this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).catch(err=>err)
-      if(result!=='confirm'){
-        return this.$message.info('取消删除')
+      const result = await this.$confirm("此操作将永久删除该文章, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).catch((err) => err);
+      if (result !== "confirm") {
+        return this.$message.info("取消删除");
       }
-      this.$api.articles.remove(id)
-      .then((resp)=>{
-          let data=resp.data;
-          console.log(data);
-          if(data.success){
-            this.getArticleList();
-            return this.$message.success('删除成功')
-          }else{
-            return this.$message.error('删除失败')
-          }
-        })
-
+      this.$api.articles.remove(id).then((resp) => {
+        let data = resp.data;
+        console.log(data);
+        if (data.success) {
+          this.getArticleList();
+          return this.$message.success("删除成功");
+        } else {
+          return this.$message.error("删除失败");
+        }
+      });
     },
     // showArticleDialog(articleId,userid,title,content){
     //   this.articleDetail.articleId=articleId;
@@ -182,12 +182,11 @@ methods:{
     //     })
     //   this.DialogVisible=true;
     // }
-}
-}
-
+  },
+};
 </script>
 <style>
-.el-tooltip__popper{
-max-width:30%
+.el-tooltip__popper {
+  max-width: 30%;
 }
 </style>

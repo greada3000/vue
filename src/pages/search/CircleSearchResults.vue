@@ -1,73 +1,77 @@
 <template>
-    <div class="about">
-        <el-scrollbar style="height:75%">
-        <!-- <span>wode搜索主页</span> -->
-        <!-- <span>{{$route.params.id}}</span> -->
-        <el-col :span="15" :offset="2">
+  <div class="about">
+    <el-scrollbar style="height: 75%">
+      <!-- <span>wode搜索主页</span> -->
+      <!-- <span>{{$route.params.id}}</span> -->
+      <el-col :span="15" :offset="2">
+        <el-card>
+          <div v-for="(item, i) in circlelist" :key="i">
             <el-card>
-                <div v-for="(item,i) in circlelist" :key="i">
-                    <el-card>
-                        <template #header><div class="clearfix">
-                            <el-row :gutter="6">
-                                <el-col :span="7">
-                                <h3><router-link target="_blank" :to="'/circles/'+item.circleId">{{item.circleName}}</router-link></h3>
-                                <h5>{{item.detail}}</h5>
-                                </el-col>
-                            </el-row> 
-                        </div></template>
-                    </el-card>
+              <template #header>
+                <div class="clearfix">
+                  <el-row :gutter="6">
+                    <el-col :span="7">
+                      <h3>
+                        <router-link target="_blank" :to="'/circles/' + item.circleId">
+                          {{ item.circleName }}
+                        </router-link>
+                      </h3>
+                      <h5>{{ item.detail }}</h5>
+                    </el-col>
+                  </el-row>
                 </div>
+              </template>
             </el-card>
-        </el-col>
+          </div>
+        </el-card>
+      </el-col>
     </el-scrollbar>
-    </div>
+  </div>
 </template>
 <script>
-export default{
-    name: 'CircleSearchResults',
-    data(){
-      return{
-        queryInfo:{
-          query:this.$route.query.keyword,
-          pageNo:1,
-          pageSize:10
-        },
-        circlelist:[],
-        total:0,
-    }
-    },
-    created(){
-        this.getCircleList()
-    },
-    watch: {
-        // 如果 `question` 发生改变，这个函数就会运行
+export default {
+  name: "CircleSearchResults",
+  data() {
+    return {
+      queryInfo: {
+        query: this.$route.query.keyword,
+        pageNo: 1,
+        pageSize: 10,
+      },
+      circlelist: [],
+      total: 0,
+    };
+  },
+  created() {
+    this.getCircleList();
+  },
+  watch: {
+    // 如果 `question` 发生改变，这个函数就会运行
     $route: function (newQuestion, oldQuestion) {
-        this.getCircleList({ pageNo:1,query:this.$route.query.keyword,
-        pageSize:10})
-        }
+      this.getCircleList({
+        pageNo: 1,
+        query: this.$route.query.keyword,
+        pageSize: 10,
+      });
     },
-    methods:{
-        getCircleList(keyword = undefined){
-        // console.log('1111')
-        // console.log('传参',keyword)
-        this.$api.circles.search(keyword ? keyword : this.queryInfo)
-      .then((resp)=>{
-        let data=resp.data;
-        if(data.success){
-          this.loginForm={};
+  },
+  methods: {
+    getCircleList(keyword = undefined) {
+      // console.log('1111')
+      // console.log('传参',keyword)
+      this.$api.circles.search(keyword ? keyword : this.queryInfo).then((resp) => {
+        let data = resp.data;
+        if (data.success) {
+          this.loginForm = {};
           console.log(data.data);
           console.log(data.data.records);
-          this.total=data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
-          this.circlelist=data.data.records ?? data.data.content ?? data.data.items ?? [];
-        }else{
-            return this.$message.error('获取圈子列表失败')
-          }
+          this.total = data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
+          this.circlelist = data.data.records ?? data.data.content ?? data.data.items ?? [];
+        } else {
+          return this.$message.error("获取圈子列表失败");
+        }
       });
-    
-    }
-} 
-
-}
-
-
+    },
+  },
+};
 </script>
