@@ -5,6 +5,7 @@
 - Source visual truth: `C:\Users\Administrator\.codex\generated_images\01a017ca-7818-7113-8420-bd5738b09fe2\exec-7b89420f-37e6-4df7-9673-8d7c0067e807.png`
 - Browser-rendered implementation: `D:\ugb\backend1\vue\qa\home-implementation.png`
 - Side-by-side comparison: `D:\ugb\backend1\vue\qa\home-comparison.png`
+- Navigation overlap comparison: `D:\ugb\backend1\vue\qa\nav-overlap-comparison.png`
 - Mobile evidence: `D:\ugb\backend1\vue\qa\home-mobile.png`
 - Supporting screen evidence: `D:\ugb\backend1\vue\qa\login-implementation.png`, `D:\ugb\backend1\vue\qa\admin-implementation.png`
 - Source pixels: 1487 × 1058.
@@ -52,6 +53,12 @@ The full comparison was inspected at original detail, where the header typograph
   - Post-fix evidence: browser interaction navigated to `/search/articles?keyword=%E8%AE%BE%E8%AE%A1` and displayed the search page heading.
 
 ### Final pass
+
+Before the final pass, a focused navigation-overlap iteration was completed:
+
+- Earlier [P2] finding: at the user's display state, the transparent article-category toolbar visually merged with the dark featured-story overlay.
+  - Fix: isolated the feature grid and article stream into separate stacking contexts, gave the stream and toolbar explicit opaque surfaces and z-indexes, added a 20 px section gap, and made the feed column a flow-root.
+  - Post-fix evidence: `qa/nav-overlap-comparison.png`; browser measurements report feature bottom 628 px, stream top 648 px, gap 20 px, overlap 0 px, and toolbar background `rgb(255, 253, 250)`.
 
 - Production build: passed (`vite build`).
 - Homepage console errors/warnings: none.

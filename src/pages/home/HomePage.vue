@@ -208,8 +208,9 @@ blockquote { min-height: 72px; display: flex; align-items: center; gap: 14px; ma
 blockquote span { color: #9d8ac9; font: 700 30px Georgia, serif; }
 blockquote p { margin: 0; color: #665d6a; line-height: 1.7; }
 .home-grid { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; }
-.feed-column, .discovery-column { min-width: 0; }
-.feature-grid { width: 100%; min-width: 0; height: 420px; display: grid; grid-template-columns: 1.35fr 1fr; gap: 16px; }
+.feed-column { min-width: 0; display: flow-root; }
+.discovery-column { min-width: 0; }
+.feature-grid { position: relative; z-index: 0; isolation: isolate; overflow: hidden; width: 100%; min-width: 0; height: 420px; display: grid; grid-template-columns: 1.35fr 1fr; gap: 16px; }
 .feature-stack { display: grid; grid-template-rows: 1fr 1fr; gap: 16px; }
 .feature-card { position: relative; overflow: hidden; min-height: 0; border-radius: 16px; background: #3a2d3d; color: #fff; }
 .feature-card img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .45s ease; }
@@ -223,8 +224,8 @@ blockquote p { margin: 0; color: #665d6a; line-height: 1.7; }
 .story-label { align-self: flex-start; padding: 5px 9px; border-radius: 7px; background: rgba(100,88,103,.66); backdrop-filter: blur(8px); font-size: 12px; }
 .story-label--coral { background: rgba(220,112,78,.9); }
 .story-meta { display: flex; flex-wrap: wrap; gap: 16px; color: rgba(255,255,255,.86); font-size: 12px; }
-.article-stream { min-width: 0; margin-top: 16px; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
-.stream-toolbar { min-height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 18px; border-bottom: 1px solid var(--line); }
+.article-stream { position: relative; z-index: 2; isolation: isolate; clear: both; min-width: 0; margin-top: 20px; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+.stream-toolbar { position: relative; z-index: 1; min-height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 18px; border-bottom: 1px solid var(--line); background: var(--surface); }
 .topic-tabs { display: flex; align-self: stretch; overflow-x: auto; }
 .topic-tabs button { position: relative; padding: 0 14px; border: 0; background: transparent; color: #605865; cursor: pointer; white-space: nowrap; }
 .topic-tabs button.active { color: var(--brand); font-weight: 700; }
