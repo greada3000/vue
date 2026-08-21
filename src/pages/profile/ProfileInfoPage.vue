@@ -45,7 +45,6 @@ export default {
         let data = resp.data;
         if (data.success) {
           this.user = data.data;
-          console.log(data.data.username);
         }
       });
     },

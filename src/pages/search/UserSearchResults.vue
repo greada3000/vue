@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import { normalizePage } from "@/services/response";
+
 export default {
   name: "UserSearchResults",
   data() {
@@ -45,7 +47,7 @@ export default {
   },
   watch: {
     // 如果 `question` 发生改变，这个函数就会运行
-    $route: function (newQuestion, oldQuestion) {
+    $route: function () {
       this.getUserList({
         pageNo: 1,
         query: this.$route.query.keyword,
@@ -61,12 +63,11 @@ export default {
         let data = resp.data;
         if (data.success) {
           this.loginForm = {};
-          console.log(data.data);
-          console.log(data.data.records);
-          this.total = data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
-          this.userlist = data.data.records ?? data.data.content ?? data.data.items ?? [];
+          const page = normalizePage(data.data);
+          this.total = page.total;
+          this.userlist = page.items;
         } else {
-          return this.$message.error("获取圈子列表失败");
+          return this.$message.error("获取用户列表失败");
         }
       });
     },

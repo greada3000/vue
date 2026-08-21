@@ -27,7 +27,12 @@
         <h1>欢迎回来</h1>
         <p class="auth-subtitle">登录后继续探索感兴趣的故事与圈子</p>
         <el-form-item>
-          <el-input v-model.number="loginForm.userId" autocomplete="username" placeholder="账号" clearable />
+          <el-input
+            v-model.number="loginForm.userId"
+            autocomplete="username"
+            placeholder="账号"
+            clearable
+          />
         </el-form-item>
         <el-form-item>
           <el-input
@@ -36,9 +41,16 @@
             autocomplete="current-password"
             placeholder="密码"
             show-password
-            @keyup.enter="Login" />
+            @keyup.enter="Login"
+          />
         </el-form-item>
-        <el-button class="auth-submit" type="primary" :loading="submitting" @click="Login">登录</el-button>
+        <el-button
+          class="auth-submit"
+          type="primary"
+          :loading="submitting"
+          @click="Login"
+          >登录</el-button
+        >
         <p class="auth-switch">
           还没有账号？
           <button type="button" @click="toRegister">立即注册</button>
@@ -51,18 +63,22 @@
 
 <script>
 import { Sunrise } from "@element-plus/icons-vue";
+import { setBasicAuth } from "@/services/api";
 export default {
   name: "LoginPage",
   components: { Sunrise },
   data: () => ({ loginForm: { userId: "", password: "" }, submitting: false }),
   methods: {
     Login() {
-      if (!this.loginForm.userId || !this.loginForm.password) return this.$message.warning("请输入账号和密码");
+      if (!this.loginForm.userId || !this.loginForm.password)
+        return this.$message.warning("请输入账号和密码");
       this.submitting = true;
       this.$api.users
         .login(this.loginForm)
         .then(({ data }) => {
-          if (!data.success) return this.$message.error(data.message || "登录失败");
+          if (!data.success)
+            return this.$message.error(data.message || "登录失败");
+          setBasicAuth(this.loginForm.userId, this.loginForm.password);
           this.$store.dispatch("asyncUpdateUser", {
             name: data.data.userId,
             username: data.data.username,
@@ -70,9 +86,19 @@ export default {
             pic: data.data.userpic,
           });
           this.$message.success("欢迎回来");
-          this.$router.push(data.data.usertype ? { name: "admin-dashboard" } : { name: "home" });
+          const redirect = this.$route.query.redirect;
+          this.$router.push(
+            redirect ||
+              (data.data.usertype
+                ? { name: "admin-dashboard" }
+                : { name: "home" }),
+          );
         })
-        .catch(() => this.$message.error("暂时无法登录，请确认后端服务已启动"))
+        .catch((error) =>
+          this.$message.error(
+            error.userMessage || "暂时无法登录，请确认后端服务已启动",
+          ),
+        )
         .finally(() => {
           this.submitting = false;
         });

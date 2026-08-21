@@ -9,12 +9,7 @@
 </template>
 
 <script>
-export default {
-  name: "App",
-  created() {
-    this.$store.commit("initUser");
-  },
-};
+export default { name: "App" };
 </script>
 
 <style></style>

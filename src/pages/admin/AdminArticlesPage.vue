@@ -24,12 +24,12 @@
             <el-table-column label="文章id" prop="articleId"></el-table-column>
             <el-table-column label="文章题目" prop="title">
               <template #default="scope">
-                <div v-html="scope.row.title"></div>
+                <div>{{ scope.row.title }}</div>
               </template>
             </el-table-column>
             <el-table-column label="文章内容" prop="content" show-overflow-tooltip>
               <template #default="scope">
-                <div v-html="scope.row.content"></div>
+                <div>{{ scope.row.content }}</div>
               </template>
             </el-table-column>
             <el-table-column label="作者" prop="username"></el-table-column>
@@ -89,6 +89,8 @@
   </div>
 </template>
 <script>
+import { normalizePage } from "@/services/response";
+
 export default {
   name: "AdminArticlesPage",
   data() {
@@ -119,9 +121,9 @@ export default {
         let data = resp.data;
         if (data.success) {
           this.loginForm = {};
-          console.log(data.data.data);
-          this.total = data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
-          this.articlelist = data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? [];
+          const page = normalizePage(data.data);
+          this.total = page.total;
+          this.articlelist = page.items;
         } else {
           return this.$message.error("获取文章列表失败");
         }
@@ -144,7 +146,6 @@ export default {
       window.open(routeData.href, "_blank");
     },
     async removeArticelById(id) {
-      console.log(id);
       const result = await this.$confirm("此操作将永久删除该文章, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -155,7 +156,6 @@ export default {
       }
       this.$api.articles.remove(id).then((resp) => {
         let data = resp.data;
-        console.log(data);
         if (data.success) {
           this.getArticleList();
           return this.$message.success("删除成功");

@@ -44,6 +44,8 @@
 </template>
 
 <script>
+import { normalizePage } from "@/services/response";
+
 export default {
   name: "CircleArticlesPage",
   data() {
@@ -60,10 +62,9 @@ export default {
       this.$api.articles.byCircle(this.$route.params.id).then((resp) => {
         let data = resp.data;
         if (data.success) {
-          console.log(data);
-          console.log(data.data);
-          this.total = data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
-          this.articlelist = data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? data.data;
+          const page = normalizePage(data.data);
+          this.total = page.total;
+          this.articlelist = page.items;
         }
       });
     },

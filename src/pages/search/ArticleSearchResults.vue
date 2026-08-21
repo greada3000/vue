@@ -11,7 +11,7 @@
                 <div class="clearfix">
                   <span style="line-height: 36px">
                     <router-link target="_blank" :to="'/articles/' + item.articleId">
-                      <div v-html="item.title"></div>
+                      <div>{{ item.title }}</div>
                     </router-link>
                   </span>
                   <h5>
@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import { normalizePage } from "@/services/response";
+
 export default {
   name: "ArticleSearchResults",
   data() {
@@ -58,12 +60,9 @@ export default {
   created() {
     this.getArticleList();
   },
-  mounted() {
-    // bus.$on('search',()=>console.log('cs 锁我'))
-  },
   watch: {
     // 如果 `question` 发生改变，这个函数就会运行
-    $route: function (newQuestion, oldQuestion) {
+    $route: function () {
       this.getArticleList({
         pageNo: 1,
         query: this.$route.query.keyword,
@@ -73,15 +72,13 @@ export default {
   },
   methods: {
     getArticleList(keyword = undefined) {
-      console.log("1111");
-      console.log("传参", keyword);
       this.$api.articles.search(keyword ? keyword : this.queryInfo).then((resp) => {
         let data = resp.data;
         if (data.success) {
           this.loginForm = {};
-          console.log(data.data.data);
-          this.total = data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? 0;
-          this.articlelist = data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? [];
+          const page = normalizePage(data.data);
+          this.total = page.total;
+          this.articlelist = page.items;
         } else {
           return this.$message.error("获取文章列表失败");
         }

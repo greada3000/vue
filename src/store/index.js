@@ -1,4 +1,7 @@
-import { createStore } from 'vuex'
+import { createStore } from "vuex";
+import { clearBasicAuth } from "@/services/api";
+
+const USER_STORAGE_KEY = "communityUserInfo";
 
 export default createStore({
   state:{
@@ -24,10 +27,10 @@ export default createStore({
     updateUser(state,user){
       state.user=user;
       state.loginStatus=true;
-      localStorage.setItem('teaUserInfo',JSON.stringify(state.user))
+      sessionStorage.setItem(USER_STORAGE_KEY, JSON.stringify(state.user));
     },
     initUser(state){
-      let userInfo=JSON.parse(localStorage.getItem('teaUserInfo'))
+      let userInfo = JSON.parse(sessionStorage.getItem(USER_STORAGE_KEY));
       if(userInfo){
         state.loginStatus=true;
         state.user=userInfo;
@@ -36,7 +39,8 @@ export default createStore({
     removeUser(state){
       state.user={};
       state.loginStatus=false;
-      localStorage.removeItem('teaUserInfo')
+      sessionStorage.removeItem(USER_STORAGE_KEY);
+      clearBasicAuth();
     }
   },
   actions: {

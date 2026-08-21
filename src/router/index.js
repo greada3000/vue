@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import store from "@/store";
 
 const routes = [
   {
@@ -30,6 +31,7 @@ const routes = [
     alias: "/myhome/:id",
     component: () => import("@/pages/profile/MyProfileLayout.vue"),
     props: true,
+    meta: { requiresAuth: true },
     children: [
       {
         path: "",
@@ -141,6 +143,7 @@ const routes = [
     path: "/admin",
     alias: "/Manage",
     component: () => import("@/pages/admin/AdminLayout.vue"),
+    meta: { requiresAuth: true, requiresAdmin: true },
     children: [
       {
         path: "",
@@ -190,6 +193,19 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior: () => ({ top: 0 }),
+});
+
+router.beforeEach((to) => {
+  if (to.meta.requiresAuth && !store.getters.getLoginStatus) {
+    return { name: "login", query: { redirect: to.fullPath } };
+  }
+  if (to.meta.requiresAdmin && !store.getters.getUser?.usertype) {
+    return { name: "home" };
+  }
+  if (to.path.startsWith("/profile/") && String(to.params.id) !== String(store.getters.getUser?.name)) {
+    return { name: "my-profile", params: { id: store.getters.getUser?.name } };
+  }
+  return true;
 });
 
 export default router;

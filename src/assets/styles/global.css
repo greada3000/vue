@@ -335,7 +335,7 @@ textarea {
   color: #fff;
   background:
     linear-gradient(145deg, rgba(58, 38, 68, 0.82), rgba(83, 57, 108, 0.66)),
-    url("../images/bookstore-feature.png") center/cover;
+    url("../images/bookstore-feature.webp") center/cover;
 }
 .auth-visual .brand {
   color: #fff;

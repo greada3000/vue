@@ -72,6 +72,8 @@
   </div>
 </template>
 <script>
+import { normalizePage } from "@/services/response";
+
 export default {
   name: "AdminCirclesPage",
   data() {
@@ -95,11 +97,9 @@ export default {
         let data = resp.data;
         if (data.success) {
           this.loginForm = {};
-          console.log(data);
-          console.log(data.data);
-          console.log(data.data.records);
-          this.circlelist = data.data.records ?? data.data.content ?? data.data.items ?? [];
-          this.total = data.data.total ?? data.data.totalElements ?? 0;
+          const page = normalizePage(data.data);
+          this.circlelist = page.items;
+          this.total = page.total;
         }
       });
     },
@@ -120,7 +120,6 @@ export default {
       window.open(routeData.href, "_blank");
     },
     async removeUserById(id) {
-      console.log(id);
       const result = await this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -131,7 +130,6 @@ export default {
       }
       this.$api.circles.remove(id).then((resp) => {
         let data = resp.data;
-        console.log(data);
         if (data.success) {
           this.getUserList();
           return this.$message.success("删除成功");

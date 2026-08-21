@@ -79,22 +79,19 @@ export default {
     getcirclelist() {
       this.$api.circles.byOwner(this.$route.params.id).then((resp) => {
         let data = resp.data;
-        console.log(data.data);
-        this.circlelist = data.data;
+        if (data.success) this.circlelist = data.data || [];
       });
     },
     mydelete(id) {
       this.$api.circles.remove(id).then((resp) => {
         let data = resp.data;
-        console.log(data.data);
-        this.getcirclelist();
+        if (data.success) this.getcirclelist();
       });
     },
     edit() {
       this.$api.circles.create(this.editForm).then((resp) => {
         let data = resp.data;
         if (data.success) {
-          console.log(data.data);
           this.editForm = { owner: this.$store.getters.getUser.name };
           this.editDialogVisible = false;
           this.$message({

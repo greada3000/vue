@@ -20,7 +20,10 @@
       <div class="home-grid">
         <section class="feed-column">
           <div class="feature-grid">
-            <router-link class="feature-card feature-card--large" :to="articleRoute(featuredArticles[0])">
+            <router-link
+              class="feature-card feature-card--large"
+              :to="articleRoute(featuredArticles[0])"
+            >
               <img :src="bookstoreImage" alt="阳光照进旧书店" />
               <div class="feature-overlay">
                 <span class="story-label story-label--coral">精选故事</span>
@@ -37,7 +40,10 @@
             </router-link>
 
             <div class="feature-stack">
-              <router-link class="feature-card" :to="articleRoute(featuredArticles[1])">
+              <router-link
+                class="feature-card"
+                :to="articleRoute(featuredArticles[1])"
+              >
                 <img :src="trainImage" alt="夏日海边电车" />
                 <div class="feature-overlay feature-overlay--compact">
                   <span class="story-label">旅行日记</span>
@@ -51,7 +57,10 @@
                   </div>
                 </div>
               </router-link>
-              <router-link class="feature-card" :to="articleRoute(featuredArticles[2])">
+              <router-link
+                class="feature-card"
+                :to="articleRoute(featuredArticles[2])"
+              >
                 <img :src="journalImage" alt="阳光下的手帐" />
                 <div class="feature-overlay feature-overlay--compact">
                   <span class="story-label">设计灵感</span>
@@ -75,19 +84,31 @@
                   v-for="topic in topics"
                   :key="topic"
                   :class="{ active: activeTopic === topic }"
-                  @click="activeTopic = topic">
+                  @click="activeTopic = topic"
+                >
                   {{ topic }}
                 </button>
               </div>
-              <el-select v-model="sortOrder" class="sort-select" aria-label="文章排序">
+              <el-select
+                v-model="sortOrder"
+                class="sort-select"
+                aria-label="文章排序"
+              >
                 <el-option label="最新发布" value="latest" />
                 <el-option label="最多阅读" value="popular" />
               </el-select>
             </div>
 
             <div class="article-list">
-              <article v-for="(item, index) in visibleArticles" :key="item.articleId || index" class="article-row">
-                <img :src="index % 2 ? bookstoreImage : journalImage" :alt="item.title" />
+              <article
+                v-for="(item, index) in visibleArticles"
+                :key="item.articleId || index"
+                class="article-row"
+              >
+                <img
+                  :src="index % 2 ? bookstoreImage : journalImage"
+                  :alt="item.title"
+                />
                 <div class="article-row__content">
                   <router-link :to="articleRoute(item)">
                     <h3>{{ item.title }}</h3>
@@ -95,7 +116,9 @@
                   <p>{{ item.content }}</p>
                   <div class="article-row__meta">
                     <span class="topic-pill">{{ topicFor(item, index) }}</span>
-                    <span class="mini-avatar">{{ (item.username || "拾").slice(0, 1) }}</span>
+                    <span class="mini-avatar">{{
+                      (item.username || "拾").slice(0, 1)
+                    }}</span>
                     <span>{{ item.username || "晚风藏书匣" }}</span>
                     <span>{{ index + 2 }} 小时前</span>
                     <span class="meta-spacer"></span>
@@ -112,7 +135,8 @@
               :page-size="queryInfo.pageSize"
               layout="prev, pager, next"
               :total="total"
-              @current-change="handleCurrentChange" />
+              @current-change="handleCurrentChange"
+            />
           </section>
         </section>
 
@@ -125,9 +149,15 @@
                 <span class="avatar-stack">林 苏 鹿</span>
                 <span>等 128 位同好参与</span>
               </div>
-              <el-button type="primary" @click="handleWrite">参与共创</el-button>
+              <el-button type="primary" @click="handleWrite"
+                >参与共创</el-button
+              >
             </div>
-            <img class="weekly-card__art" :src="summerDrinkImage" alt="夏日冰饮插画" />
+            <img
+              class="weekly-card__art"
+              :src="summerDrinkImage"
+              alt="夏日冰饮插画"
+            />
           </section>
 
           <section class="circle-card">
@@ -135,17 +165,29 @@
               <h2>推荐圈子</h2>
               <router-link :to="{ name: 'search-circles' }">更多 ›</router-link>
             </div>
-            <div v-for="(circle, index) in displayCircles" :key="circle.circleId || index" class="circle-item">
-              <img :src="circleImages[index % circleImages.length]" :alt="circle.circleName" />
+            <div
+              v-for="(circle, index) in displayCircles"
+              :key="circle.circleId || index"
+              class="circle-item"
+            >
+              <img
+                :src="circleImages[index % circleImages.length]"
+                :alt="circle.circleName"
+              />
               <div>
                 <router-link :to="`/circles/${circle.circleId || index + 1}`">
                   <strong>{{ circle.circleName }}</strong>
                 </router-link>
                 <p>
-                  {{ circle.detail || circleDescriptions[index % circleDescriptions.length] }}
+                  {{
+                    circle.detail ||
+                    circleDescriptions[index % circleDescriptions.length]
+                  }}
                 </p>
               </div>
-              <el-button plain size="small" @click="joinCircle(circle)">加入</el-button>
+              <el-button plain size="small" @click="joinCircle(circle)"
+                >加入</el-button
+              >
             </div>
           </section>
 
@@ -172,17 +214,19 @@
 <script>
 import { MagicStick } from "@element-plus/icons-vue";
 import SiteHeader from "@/components/common/SiteHeader.vue";
-import bookstoreImage from "@/assets/images/bookstore-feature.png";
-import trainImage from "@/assets/images/coastal-train.png";
-import journalImage from "@/assets/images/journal-notes.png";
-import summerDrinkImage from "@/assets/images/summer-drink.png";
-import communityNoteImage from "@/assets/images/community-note.png";
+import bookstoreImage from "@/assets/images/bookstore-feature.webp";
+import trainImage from "@/assets/images/coastal-train.webp";
+import journalImage from "@/assets/images/journal-notes.webp";
+import summerDrinkImage from "@/assets/images/summer-drink.webp";
+import communityNoteImage from "@/assets/images/community-note.webp";
+import { normalizePage } from "@/services/response";
 
 const fallbackArticles = [
   {
     articleId: 1,
     title: "在旧书店的一下午，遇见另一个自己",
-    content: "阳光透过木格窗洒在书页上，时间在这里慢了下来。分享我在城市旧书店的随笔与收获。",
+    content:
+      "阳光透过木格窗洒在书页上，时间在这里慢了下来。分享我在城市旧书店的随笔与收获。",
     username: "苏苏在路上",
     circleId: 1,
   },
@@ -234,13 +278,27 @@ export default {
       summerDrinkImage,
       communityNoteImage,
       circleImages: [bookstoreImage, journalImage, trainImage],
-      circleDescriptions: ["分享读书笔记与书单", "交流创意与作品", "记录生活里的闪光时刻"],
+      circleDescriptions: [
+        "分享读书笔记与书单",
+        "交流创意与作品",
+        "记录生活里的闪光时刻",
+      ],
       queryInfo: { query: "", pageNo: 1, pageSize: 5 },
       circleQuery: { query: "", pageNo: 1, pageSize: 6 },
       ArticleList: [...fallbackArticles],
       words: [...fallbackCircles],
       total: fallbackArticles.length,
-      topics: ["推荐", "最新", "关注的人", "读书", "设计", "校园", "旅行", "科技", "生活"],
+      topics: [
+        "推荐",
+        "最新",
+        "关注的人",
+        "读书",
+        "设计",
+        "校园",
+        "旅行",
+        "科技",
+        "生活",
+      ],
       activeTopic: "推荐",
       sortOrder: "latest",
     };
@@ -259,7 +317,9 @@ export default {
       return [...this.ArticleList, ...fallbackArticles].slice(0, 3);
     },
     visibleArticles() {
-      return (this.ArticleList.length ? this.ArticleList : fallbackArticles).slice(0, 5);
+      return (
+        this.ArticleList.length ? this.ArticleList : fallbackArticles
+      ).slice(0, 5);
     },
     displayCircles() {
       return (this.words.length ? this.words : fallbackCircles).slice(0, 4);
@@ -274,13 +334,17 @@ export default {
       return `/articles/${item.articleId || 1}`;
     },
     topicFor(item, index) {
-      return item.circleName || ["读书笔记", "校园生活", "设计灵感", "旅行日记"][index % 4];
+      return (
+        item.circleName ||
+        ["读书笔记", "校园生活", "设计灵感", "旅行日记"][index % 4]
+      );
     },
     search(keyword) {
       this.$router.push({ name: "search-articles", query: { keyword } });
     },
     handleWrite() {
-      if (!this.$store.getters.getLoginStatus) return this.$router.push({ name: "login" });
+      if (!this.$store.getters.getLoginStatus)
+        return this.$router.push({ name: "login" });
       const circle = this.displayCircles[0];
       this.$router.push(`/circles/${circle?.circleId || 1}/articles`);
       this.$message.success("选择一个圈子，开始分享你的故事吧");
@@ -297,7 +361,7 @@ export default {
         .search(this.circleQuery)
         .then(({ data }) => {
           if (data.success) {
-            const items = data.data.records ?? data.data.content ?? data.data.items ?? [];
+            const { items } = normalizePage(data.data);
             if (items.length) this.words = items;
           }
         })
@@ -308,9 +372,9 @@ export default {
         .search(this.queryInfo)
         .then(({ data }) => {
           if (data.success) {
-            const items = data.data.data ?? data.data.records ?? data.data.content ?? data.data.items ?? [];
+            const { items, total } = normalizePage(data.data);
             if (items.length) this.ArticleList = items;
-            this.total = data.data.totalHit ?? data.data.total ?? data.data.totalElements ?? this.ArticleList.length;
+            this.total = total;
           }
         })
         .catch(() => {});
@@ -395,7 +459,10 @@ blockquote p {
 
 .feed-column {
   min-width: 0;
-  display: flow-root;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  row-gap: 20px;
 }
 
 .discovery-column {
@@ -406,7 +473,8 @@ blockquote p {
   position: relative;
   z-index: 0;
   isolation: isolate;
-  overflow: hidden;
+  overflow: clip;
+  overflow-clip-margin: 2px;
   width: 100%;
   min-width: 0;
   height: 420px;
@@ -416,6 +484,9 @@ blockquote p {
 }
 
 .feature-stack {
+  position: relative;
+  z-index: 0;
+  min-height: 0;
   display: grid;
   grid-template-rows: 1fr 1fr;
   gap: 16px;
@@ -423,6 +494,8 @@ blockquote p {
 
 .feature-card {
   position: relative;
+  z-index: 0;
+  contain: paint;
   overflow: hidden;
   min-height: 0;
   border-radius: 16px;
@@ -508,7 +581,7 @@ blockquote p {
   isolation: isolate;
   clear: both;
   min-width: 0;
-  margin-top: 20px;
+  margin-top: 0;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 16px;

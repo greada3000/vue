@@ -8,6 +8,14 @@
 - 统一响应字段：`success`、`message`、`data`、`timestamp`
 - 分页参数：`page` 从 1 开始，`size` 默认为 10
 
+## 认证方式
+
+- OpenAPI 声明的安全方案为 HTTP Basic Authentication（`basicAuth`）。
+- 登录接口用于校验账号密码并返回用户资料，但不会签发 Token 或 Session Cookie。
+- 修改、创建、删除、关注等受保护请求必须继续携带 `Authorization: Basic <base64(userId:password)>`。
+- 前端只在当前浏览器会话的 `sessionStorage` 中保存 Basic 凭据，关闭会话后需要重新登录；生产环境必须使用 HTTPS，避免凭据被窃听。
+- Vite 开发环境通过同源 `/api` 代理到 `http://localhost:8080`；生产环境可设置 `VITE_API_BASE_URL`，或由部署网关反向代理 `/api`。
+
 ## 接口清单
 
 | 模块 | 方法 | 路径 | 功能 |

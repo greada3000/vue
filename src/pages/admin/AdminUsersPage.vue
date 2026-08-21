@@ -77,6 +77,7 @@
 <script>
 import AdminUserCreateDialog from "@/components/admin/AdminUserCreateDialog.vue";
 import AdminUserEditDialog from "@/components/admin/AdminUserEditDialog.vue";
+import { normalizePage } from "@/services/response";
 
 export default {
   name: "AdminUsersPage",
@@ -105,6 +106,7 @@ export default {
         if (data.success) {
           this.loginForm = {};
           this.dialogVisible = false;
+          this.getUserList();
           this.$message({
             message: "注册成功",
             type: "success",
@@ -125,8 +127,9 @@ export default {
           // console.log(data);
           // console.log(data.data);
           // const res=data.data;
-          this.userlist = data.data.records ?? data.data.content ?? data.data.items ?? [];
-          this.total = data.data.total ?? data.data.totalElements ?? 0;
+          const page = normalizePage(data.data);
+          this.userlist = page.items;
+          this.total = page.total;
           // console.log(res);
         } else {
           return this.$message.error("获取用户列表失败");
@@ -144,7 +147,6 @@ export default {
     showEditDialog(id) {
       this.$api.users.get(id).then((resp) => {
         let data = resp.data;
-        console.log(data);
         if (data.success) {
           this.editForm = data.data;
         } else {
@@ -181,7 +183,6 @@ export default {
       });
     },
     async removeUserById(id) {
-      console.log(id);
       const result = await this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -192,7 +193,6 @@ export default {
       }
       this.$api.users.remove(id).then((resp) => {
         let data = resp.data;
-        console.log(data);
         if (data.success) {
           this.getUserList();
           return this.$message.success("删除成功");

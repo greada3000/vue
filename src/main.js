@@ -8,6 +8,7 @@ import { Delete, Edit, Search } from "@element-plus/icons-vue";
 import "./assets/styles/global.css";
 
 const app = createApp(App);
+store.commit("initUser");
 app.component("DeleteIcon", Delete);
 app.component("EditIcon", Edit);
 app.component("SearchIcon", Search);

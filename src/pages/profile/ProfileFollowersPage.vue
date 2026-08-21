@@ -46,7 +46,6 @@ export default {
       this.$api.follows.followers(this.$route.params.id).then((resp) => {
         let data = resp.data;
         if (data.success) {
-          console.log(data);
           this.fanslist = data.data;
         }
       });
@@ -59,7 +58,6 @@ export default {
       this.$api.follows.remove(prelast.preuser, prelast.lastuser).then((resp) => {
         let data = resp.data;
         if (data.success) {
-          console.log(data);
           this.getfans();
         }
       });
